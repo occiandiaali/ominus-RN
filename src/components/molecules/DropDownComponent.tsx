@@ -1,14 +1,14 @@
 import {FlatList, Modal, Pressable, StyleSheet, Text, View} from 'react-native';
-import React, {FC, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const styles = StyleSheet.create({
   dropdown: {
-    // position: 'absolute',
-    backgroundColor: 'pink', //'#fff',
-    width: '90%',
-    alignSelf: 'center',
-    marginTop: '94%',
+    backgroundColor: '#d9d2e9',
+    width: '36%',
+    borderRadius: 6,
+    marginLeft: 42,
+    marginTop: '84%',
     shadowColor: '#000000',
     shadowRadius: 4,
     shadowOffset: {height: 4, width: 0},
@@ -23,7 +23,8 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   dropperWrap: {
-    backgroundColor: 'teal', //'pink',
+    width: '45%',
+    backgroundColor: '#d9d2e9',
     margin: 6,
     borderRadius: 8,
   },
@@ -32,7 +33,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 17,
     paddingBottom: 6,
-    color: '#FFFFFF',
+    right: 4,
+    color: '#351c75',
   },
   item: {
     paddingHorizontal: 10,
@@ -50,33 +52,10 @@ const styles = StyleSheet.create({
   },
 });
 
-interface Props {
-  label: string;
-  // data: Array<{label: string; value: string}>;
-  // onSelect: (item: {label: string; value: string}) => void;
-}
-
-//const CustomDropDown: FC<Props> = ({setLabel}) => {
 const CustomDropDown = ({setChoice}) => {
   const DropdownButton = useRef();
-  // const [dropDownTop, setDropDownTop] = useState(0);
   const [visible, setVisible] = useState(false);
-  const [selected, setSelected] = useState('Select category');
-
-  //   const dropdownCategories = [
-  //     {
-  //       label: 'Electronics',
-  //       value: '1',
-  //     },
-  //     {
-  //       label: 'Fashion',
-  //       value: '2',
-  //     },
-  //     {
-  //       label: 'Household',
-  //       value: '3',
-  //     },
-  //   ];
+  const [selected, setSelected] = useState('Category');
 
   const categories = ['Electronics', 'Fashion', 'Household', 'Vehicles'];
 
@@ -99,7 +78,6 @@ const CustomDropDown = ({setChoice}) => {
       <Pressable onPress={() => setVisible(false)}>
         <View style={styles.dropdown}>
           <FlatList
-            // data={dropdownCategories}
             data={categories}
             renderItem={renderItem}
             keyExtractor={(item, index) => index.toString()}
@@ -123,7 +101,6 @@ const CustomDropDown = ({setChoice}) => {
         onPress={toggleDrop}
         style={styles.dropperPresser}>
         <>
-          {/* {renderDrop()} */}
           <Text style={styles.dropperWrapText}>{selected}</Text>
           <Icon
             name={visible ? 'caret-up' : 'caret-down'}

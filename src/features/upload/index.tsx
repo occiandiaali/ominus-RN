@@ -22,12 +22,15 @@ import {
 } from 'react-native-image-picker';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
-import SelectDropdown from 'react-native-select-dropdown';
+
 import CTAButton from '../../components/CTAButton';
-import {reqCameraPermission, reqExtWritePermission} from './accessPermissions';
+//import {reqCameraPermission, reqExtWritePermission} from './accessPermissions';
+import AiResultModal from './aiResultModal';
+import CustomDropDown from '../../components/molecules/DropDownComponent';
+import DatePicker from 'react-native-date-picker';
 
 const windowWidth = Dimensions.get('window').width;
-const categories = ['electronics', 'household', 'fashion', 'vehicles'];
+//const categories = ['electronics', 'household', 'fashion', 'vehicles'];
 
 // type ImagePickerResponse = {
 //   uri?: string;
@@ -38,14 +41,39 @@ const Upload = () => {
   const [itemTitle, onChangeItemTitle] = useState('');
   const [itemDescription, onChangeItemDescription] = useState('');
   const [itemCategory, setItemCategory] = useState('');
+  const [itemPrice, onChangeItemPrice] = useState('');
+  const [usingRecommendedPrice, setUsingRecommendedPrice] = useState(false);
   const [isSwitchEnabled, setIsSwitchEnabled] = useState(false);
+  const [openDate, setOpenDate] = useState(false);
+  const [deadline, setDeadline] = useState(new Date());
   const [isPromoted, setIsPromoted] = useState(isSwitchEnabled);
   const [imagePath, setImagePath] = useState('');
   const [uploading, setUploading] = useState(false);
   const [transferred, setTransferred] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [ctaLabel, setCTALabel] = useState('Continue');
 
   const toggleSwitch = () => setIsSwitchEnabled(prev => !prev);
   const continueEnabled = itemTitle.length > 5;
+
+  const priceAccepted = () => {
+    setUsingRecommendedPrice(true);
+    setCTALabel('Publish');
+    setShowModal(false);
+  };
+
+  const onPublish = () => {
+    if (itemCategory.length === 0 || itemCategory === '') {
+      Alert.alert('Warning', 'Select a Category and enter a title!');
+      setCTALabel('Publish');
+      setUsingRecommendedPrice(true);
+      return;
+    } else {
+      onChangeItemTitle('');
+      setItemCategory('');
+      Alert.alert('Notice', 'Published new entry');
+    }
+  };
 
   const showToastAndroid = (msg: string) => {
     ToastAndroid.showWithGravity(msg, ToastAndroid.LONG, ToastAndroid.BOTTOM);
@@ -144,15 +172,7 @@ const Upload = () => {
             </TouchableWithoutFeedback>
           </View>
           <View style={styles.categorySelectRow}>
-            <SelectDropdown
-              data={categories}
-              onSelect={(selectedItem, index) => {
-                console.log(selectedItem, index);
-              }}
-              rowTextForSelection={(item, _) => {
-                return item;
-              }}
-            />
+            <CustomDropDown setChoice={setItemCategory} />
             <View style={{paddingVertical: 6, justifyContent: 'center'}}>
               <Text style={{color: '#fff', bottom: 8}}>Promoted?</Text>
               <Switch
@@ -183,14 +203,54 @@ const Upload = () => {
               value={itemDescription}
             />
           </View>
-          <View style={styles.ctaBtnView}>
-            <CTAButton
-              enabled={continueEnabled}
-              btnText={'Continue'}
-              onPress={() => console.log('Pressed CTA...')}
-            />
+          <View style={styles.lastRow}>
+            <View style={styles.priceInputView}>
+              <TextInput
+                placeholder="Enter item price..."
+                placeholderTextColor={'#351c75'}
+                style={styles.priceInput}
+                keyboardType={'number-pad'}
+                onChangeText={onChangeItemPrice}
+                value={itemPrice}
+              />
+            </View>
+            <View style={styles.calendar}>
+              <TouchableWithoutFeedback onPress={() => setOpenDate(true)}>
+                <AntIcon name="calendar" size={24} color="#351c75" />
+              </TouchableWithoutFeedback>
+            </View>
+            <View style={styles.ctaBtnView}>
+              <CTAButton
+                enabled={continueEnabled}
+                btnText={ctaLabel}
+                onPress={() => {
+                  console.log('Pressed CTA...');
+                  if (usingRecommendedPrice === false && continueEnabled) {
+                    setShowModal(true);
+                  } else {
+                    setShowModal(false);
+                    setUsingRecommendedPrice(false);
+                    setCTALabel('Continue');
+                    onPublish();
+                  }
+                }}
+              />
+            </View>
           </View>
         </ScrollView>
+        <AiResultModal
+          isVisible={showModal}
+          acceptPrice={priceAccepted}
+          closeModal={() => setShowModal(false)}
+        />
+        <DatePicker
+          modal
+          mode={'datetime'}
+          open={openDate}
+          date={deadline}
+          onConfirm={() => null}
+          onCancel={() => setOpenDate(false)}
+        />
       </KeyboardAvoidingView>
     </LinearGradient>
   );
@@ -199,18 +259,24 @@ const Upload = () => {
 export default Upload;
 
 const styles = StyleSheet.create({
+  calendar: {
+    top: 8,
+    right: 8,
+  },
   categorySelectRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    margin: 12,
+    margin: 8,
     borderWidth: 1,
     borderColor: '#fff',
     borderRadius: 12,
     padding: 14,
   },
   ctaBtnView: {
-    marginBottom: 12,
     alignSelf: 'flex-end',
+  },
+  priceInputView: {
+    padding: 8,
   },
   descInput: {
     borderWidth: 1,
@@ -260,6 +326,18 @@ const styles = StyleSheet.create({
     borderColor: '#fff',
     borderRadius: 12,
     padding: 6,
+  },
+  lastRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+  },
+  priceInput: {
+    borderWidth: 1,
+    borderColor: '#fff',
+    borderRadius: 12,
+    bottom: 6,
+    right: 8,
+    padding: 4,
   },
   titleInput: {
     borderWidth: 1,
