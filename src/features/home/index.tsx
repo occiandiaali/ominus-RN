@@ -1,6 +1,7 @@
 import {
   Dimensions,
   FlatList,
+  ImageBackground,
   ScrollView,
   StyleSheet,
   Text,
@@ -17,22 +18,27 @@ const DATA = [
   {
     id: 1,
     text: 'Box one',
+    img: 'https://images.pexels.com/photos/4061420/pexels-photo-4061420.jpeg?auto=compress&cs=tinysrgb&w=400',
   },
   {
     id: 2,
     text: 'Box two',
+    img: 'https://images.pexels.com/photos/6508357/pexels-photo-6508357.jpeg?auto=compress&cs=tinysrgb&w=400',
   },
   {
     id: 3,
     text: 'Box three',
+    img: 'https://images.pexels.com/photos/1374910/pexels-photo-1374910.jpeg?auto=compress&cs=tinysrgb&w=400',
   },
   {
     id: 4,
     text: 'Box four',
+    img: 'https://images.pexels.com/photos/2043590/pexels-photo-2043590.jpeg?auto=compress&cs=tinysrgb&w=400',
   },
   {
     id: 5,
     text: 'Box five',
+    img: 'https://images.pexels.com/photos/1201996/pexels-photo-1201996.jpeg?auto=compress&cs=tinysrgb&w=400',
   },
 ];
 
@@ -79,7 +85,11 @@ const Home = () => {
           data={DATA}
           renderItem={({item}) => (
             <View style={styles.promotedBox}>
-              <Text>{item.text}</Text>
+              <ImageBackground
+                source={{uri: `${item.img}`}}
+                style={styles.coverImg}>
+                <Text style={styles.textOnCoverImg}>{item.text}</Text>
+              </ImageBackground>
             </View>
           )}
           keyExtractor={item => item.id.toString()}
@@ -95,7 +105,11 @@ const Home = () => {
           data={DATA}
           renderItem={({item}) => (
             <View style={styles.promotedBox}>
-              <Text>{item.text}</Text>
+              <ImageBackground
+                source={{uri: `${item.img}`}}
+                style={styles.coverImg}>
+                <Text style={styles.textOnCoverImg}>{item.text}</Text>
+              </ImageBackground>
             </View>
           )}
           keyExtractor={item => item.id.toString()}
@@ -111,7 +125,11 @@ const Home = () => {
           data={DATA}
           renderItem={({item}) => (
             <View style={styles.promotedBox}>
-              <Text>{item.text}</Text>
+              <ImageBackground
+                source={{uri: `${item.img}`}}
+                style={styles.coverImg}>
+                <Text style={styles.textOnCoverImg}>{item.text}</Text>
+              </ImageBackground>
             </View>
           )}
           keyExtractor={item => item.id.toString()}
@@ -127,7 +145,11 @@ const Home = () => {
           data={DATA}
           renderItem={({item}) => (
             <View style={styles.promotedBox}>
-              <Text>{item.text}</Text>
+              <ImageBackground
+                source={{uri: `${item.img}`}}
+                style={styles.coverImg}>
+                <Text style={styles.textOnCoverImg}>{item.text}</Text>
+              </ImageBackground>
             </View>
           )}
           keyExtractor={item => item.id.toString()}
@@ -148,6 +170,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 8,
+  },
+  coverImg: {
+    width: 140,
+    height: 120,
+    borderRadius: 24,
   },
   ctaTextH1: {
     fontSize: 24,
@@ -234,5 +261,10 @@ const styles = StyleSheet.create({
   seeAllText: {
     fontSize: 14,
     color: '#351c75',
+  },
+  textOnCoverImg: {
+    alignSelf: 'center',
+    paddingTop: 40,
+    color: '#fff',
   },
 });

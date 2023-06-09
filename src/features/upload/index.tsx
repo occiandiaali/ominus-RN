@@ -1,6 +1,7 @@
 import {
   Alert,
   Dimensions,
+  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -30,12 +31,6 @@ import CustomDropDown from '../../components/molecules/DropDownComponent';
 import DatePicker from 'react-native-date-picker';
 
 const windowWidth = Dimensions.get('window').width;
-//const categories = ['electronics', 'household', 'fashion', 'vehicles'];
-
-// type ImagePickerResponse = {
-//   uri?: string;
-//   fileName?: string;
-// };
 
 const Upload = () => {
   const [itemTitle, onChangeItemTitle] = useState('');
@@ -54,7 +49,7 @@ const Upload = () => {
   const [ctaLabel, setCTALabel] = useState('Continue');
 
   const toggleSwitch = () => setIsSwitchEnabled(prev => !prev);
-  const continueEnabled = itemTitle.length > 5;
+  const continueEnabled = itemTitle.length > 5 && imagePath !== '';
 
   const priceAccepted = () => {
     setUsingRecommendedPrice(true);
@@ -64,12 +59,14 @@ const Upload = () => {
 
   const onPublish = () => {
     if (itemCategory.length === 0 || itemCategory === '') {
-      Alert.alert('Warning', 'Select a Category and enter a title!');
+      Alert.alert('Warning', 'Make sure you select an accurate Category!');
       setCTALabel('Publish');
       setUsingRecommendedPrice(true);
       return;
     } else {
+      setImagePath('');
       onChangeItemTitle('');
+      onChangeItemDescription('');
       setItemCategory('');
       Alert.alert('Notice', 'Published new entry');
     }
@@ -85,23 +82,15 @@ const Upload = () => {
       maxWidth: 300,
       maxHeight: 550,
       quality: 1,
-      videoQuality: 'low',
-      durationLimit: 30,
-      saveToPhotos: true,
     } as CameraOptions;
-    // await reqCameraPermission();
-    // await reqExtWritePermission();
     launchCamera(options, response => {
       if (response.didCancel) {
-        // Alert.alert('Camera use cancelled');
         showToastAndroid('Camera use cancelled');
         return;
       } else if (response.errorCode === 'camera_unavailable') {
-        // Alert.alert('Warning', 'Camera is unavailable...');
         showToastAndroid('Camera is unavailable...');
         return;
       } else if (response.errorCode === 'permission') {
-        // Alert.alert('Warning', 'Permission not satisfied...');
         showToastAndroid('Permission is required for this action...');
         return;
       } else if (response.errorCode === 'others') {
@@ -125,15 +114,12 @@ const Upload = () => {
     } as ImageLibraryOptions;
     launchImageLibrary(options, response => {
       if (response.didCancel) {
-        // Alert.alert('Image selection cancelled');
         showToastAndroid('Image selection cancelled');
         return;
       } else if (response.errorCode === 'camera_unavailable') {
-        // Alert.alert('Camera unavailable...');
         showToastAndroid('Camera unavailable...');
         return;
       } else if (response.errorCode === 'permission') {
-        // Alert.alert('Permission is required for this action...');
         showToastAndroid('Permission is required for this action...');
         return;
       } else if (response.errorCode === 'others') {
@@ -155,7 +141,21 @@ const Upload = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.imageBox}>
-            <AntIcon name="camerao" size={64} color={'#fff'} />
+            {imagePath !== '' ? (
+              <>
+                <Image source={{uri: imagePath}} style={styles.imagePathImg} />
+                <TouchableWithoutFeedback onPress={() => setImagePath('')}>
+                  <AntIcon
+                    name="delete"
+                    size={28}
+                    color={'#f00'}
+                    style={styles.deleteImageIcon}
+                  />
+                </TouchableWithoutFeedback>
+              </>
+            ) : (
+              <AntIcon name="camerao" size={64} color={'#fff'} />
+            )}
           </View>
           <View style={styles.imageBoxBtnRow}>
             <TouchableWithoutFeedback onPress={() => openImageGallery('photo')}>
@@ -187,18 +187,21 @@ const Upload = () => {
             <TextInput
               placeholder="Enter item title..."
               placeholderTextColor={'#351c75'}
+              textAlign="center"
               style={styles.titleInput}
               maxLength={100}
               onChangeText={onChangeItemTitle}
               value={itemTitle}
             />
             <TextInput
-              placeholder="Enter item description..."
+              placeholder="Briefly describe the item..."
               placeholderTextColor={'#351c75'}
               textAlignVertical="top"
+              textAlign="center"
               style={styles.descInput}
               multiline={true}
               numberOfLines={3}
+              maxLength={150}
               onChangeText={onChangeItemDescription}
               value={itemDescription}
             />
@@ -267,13 +270,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     margin: 8,
-    borderWidth: 1,
-    borderColor: '#fff',
-    borderRadius: 12,
+    // borderWidth: 1,
+    // borderColor: '#fff',
+    // borderRadius: 12,
     padding: 14,
   },
   ctaBtnView: {
     alignSelf: 'flex-end',
+  },
+  deleteImageIcon: {
+    position: 'absolute',
+    alignSelf: 'flex-end',
+    top: 136,
+    right: 8,
   },
   priceInputView: {
     padding: 8,
@@ -320,11 +329,15 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
   },
+  imagePathImg: {
+    width: windowWidth - 20,
+    height: 180,
+  },
   inputsContainer: {
     margin: 12,
-    borderWidth: 1,
-    borderColor: '#fff',
-    borderRadius: 12,
+    // borderWidth: 1,
+    // borderColor: '#fff',
+    // borderRadius: 12,
     padding: 6,
   },
   lastRow: {
