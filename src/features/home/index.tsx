@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Dimensions,
   FlatList,
   ImageBackground,
@@ -7,12 +8,19 @@ import {
   Text,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
+import storage from '@react-native-firebase/storage';
+import firestore from '@react-native-firebase/firestore';
 
 const windowWidth = Dimensions.get('window').width;
 //const windowHeight = Dimensions.get('window').height;
+
+interface CategoryProps {
+  img: string;
+  title: string;
+}
 
 const DATA = [
   {
@@ -43,6 +51,36 @@ const DATA = [
 ];
 
 const Home = () => {
+  const [loading, setLoading] = useState(false);
+  const [electronics, setElectronics] = useState<CategoryProps[]>([
+    {
+      img: 'https://images.pexels.com/photos/1201996/pexels-photo-1201996.jpeg?auto=compress&cs=tinysrgb&w=400',
+      title: '',
+    },
+  ]);
+
+  const getElectronics = async () => {
+    setLoading(true);
+    return await firestore()
+      .collection('Posts')
+      .where('category', '==', 'Electronics')
+      .get()
+      .then(querySnapshot => {
+        const newData = querySnapshot.docs.map(doc => ({
+          img: doc.data().imageurl,
+          title: doc.data().title,
+          ...doc.data(),
+        }));
+        setElectronics(newData);
+        setLoading(false);
+      })
+      .catch(e => console.log('getElectronics err: ', e));
+  };
+
+  useEffect(() => {
+    getElectronics();
+  }, []);
+
   return (
     <LinearGradient
       colors={['#351c75', '#8e7cc3', '#d9d2e9']}
@@ -82,17 +120,23 @@ const Home = () => {
         <FlatList
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          data={DATA}
+          data={electronics}
           renderItem={({item}) => (
             <View style={styles.promotedBox}>
-              <ImageBackground
-                source={{uri: `${item.img}`}}
-                style={styles.coverImg}>
-                <Text style={styles.textOnCoverImg}>{item.text}</Text>
-              </ImageBackground>
+              {loading ? (
+                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                  <ActivityIndicator size={'large'} color="#d9d2e9" />
+                </View>
+              ) : (
+                <ImageBackground
+                  source={{uri: `${item.img}`}}
+                  style={styles.coverImg}>
+                  <Text style={styles.textOnCoverImg}>{item.title}</Text>
+                </ImageBackground>
+              )}
             </View>
           )}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={item => item.title}
         />
 
         <View style={styles.promotedRowLabelView}>

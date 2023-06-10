@@ -144,6 +144,15 @@ const Upload = () => {
             {imagePath !== '' ? (
               <>
                 <Image source={{uri: imagePath}} style={styles.imagePathImg} />
+
+                <TouchableWithoutFeedback onPress={() => takeAPhoto('photo')}>
+                  <AntIcon
+                    name="camerao"
+                    size={28}
+                    color={'#fff'}
+                    style={styles.launchCameraIcon}
+                  />
+                </TouchableWithoutFeedback>
                 <TouchableWithoutFeedback onPress={() => setImagePath('')}>
                   <AntIcon
                     name="delete"
@@ -154,7 +163,9 @@ const Upload = () => {
                 </TouchableWithoutFeedback>
               </>
             ) : (
-              <AntIcon name="camerao" size={64} color={'#fff'} />
+              <TouchableWithoutFeedback onPress={() => takeAPhoto('photo')}>
+                <AntIcon name="camerao" size={64} color={'#fff'} />
+              </TouchableWithoutFeedback>
             )}
           </View>
           <View style={styles.imageBoxBtnRow}>
@@ -164,12 +175,23 @@ const Upload = () => {
                 <Text style={styles.imageBoxBtnText}>Gallery</Text>
               </View>
             </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={() => takeAPhoto('photo')}>
+            {/* <TouchableWithoutFeedback onPress={() => takeAPhoto('photo')}>
               <View style={styles.imageBoxBtn}>
                 <AntIcon name="camerao" size={21} color="#fff" />
                 <Text style={styles.imageBoxBtnText}>Camera</Text>
               </View>
-            </TouchableWithoutFeedback>
+            </TouchableWithoutFeedback> */}
+            <View style={styles.calendar}>
+              <Text style={{color: '#fff', fontSize: 16}}>Publish until</Text>
+              <TouchableWithoutFeedback onPress={() => setOpenDate(true)}>
+                <AntIcon
+                  name="calendar"
+                  size={24}
+                  color="#FFF"
+                  style={{paddingLeft: 36}}
+                />
+              </TouchableWithoutFeedback>
+            </View>
           </View>
           <View style={styles.categorySelectRow}>
             <CustomDropDown setChoice={setItemCategory} />
@@ -217,11 +239,7 @@ const Upload = () => {
                 value={itemPrice}
               />
             </View>
-            <View style={styles.calendar}>
-              <TouchableWithoutFeedback onPress={() => setOpenDate(true)}>
-                <AntIcon name="calendar" size={24} color="#351c75" />
-              </TouchableWithoutFeedback>
-            </View>
+
             <View style={styles.ctaBtnView}>
               <CTAButton
                 enabled={continueEnabled}
@@ -263,20 +281,18 @@ export default Upload;
 
 const styles = StyleSheet.create({
   calendar: {
-    top: 8,
     right: 8,
   },
   categorySelectRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     margin: 8,
-    // borderWidth: 1,
-    // borderColor: '#fff',
-    // borderRadius: 12,
+
     padding: 14,
   },
   ctaBtnView: {
     alignSelf: 'flex-end',
+    bottom: 10,
   },
   deleteImageIcon: {
     position: 'absolute',
@@ -335,14 +351,16 @@ const styles = StyleSheet.create({
   },
   inputsContainer: {
     margin: 12,
-    // borderWidth: 1,
-    // borderColor: '#fff',
-    // borderRadius: 12,
     padding: 6,
   },
   lastRow: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
+  },
+  launchCameraIcon: {
+    position: 'absolute',
+    alignSelf: 'flex-end',
+    right: 8,
   },
   priceInput: {
     borderWidth: 1,
