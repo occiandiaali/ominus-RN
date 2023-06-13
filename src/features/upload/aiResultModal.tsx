@@ -70,10 +70,17 @@ const AiResultModal = ({acceptPrice, closeModal, isVisible}) => {
             <Text>NGN 28, 000</Text>
           </View>
         )}
-        <View style={styles.acceptPriceView}>
-          <TouchableWithoutFeedback onPress={acceptPrice}>
-            <Text style={styles.acceptPriceText}>Accept price</Text>
-          </TouchableWithoutFeedback>
+        <View style={styles.actionBtnsView}>
+          <View style={styles.acceptPriceView}>
+            <TouchableWithoutFeedback onPress={acceptPrice}>
+              <Text style={styles.acceptPriceText}>Accept price</Text>
+            </TouchableWithoutFeedback>
+          </View>
+          <View style={styles.acceptPriceView}>
+            <TouchableWithoutFeedback onPress={acceptPrice}>
+              <Text style={styles.acceptPriceText}>Reject price</Text>
+            </TouchableWithoutFeedback>
+          </View>
         </View>
       </View>
     </Modal>
@@ -96,6 +103,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#351c75',
+  },
+  actionBtnsView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   box: {
     width: 150,

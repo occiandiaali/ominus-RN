@@ -8,11 +8,16 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
+import {
+  useGetAllProductsQuery,
+  useGetAllLaptopsQuery,
+  useGetAllPhonesQuery,
+} from '../../redux/slices/apiSlice';
 
 const windowWidth = Dimensions.get('window').width;
 //const windowHeight = Dimensions.get('window').height;
@@ -52,18 +57,40 @@ const DATA = [
 
 const Home = () => {
   const [loading, setLoading] = useState(false);
-  const [electronics, setElectronics] = useState<CategoryProps[]>([
+  const [allLoading, setAllLoading] = useState(false);
+  const placeholder =
+    'https://images.pexels.com/photos/2043590/pexels-photo-2043590.jpeg?auto=compress&cs=tinysrgb&w=400';
+  // const [electronics, setElectronics] = useState<CategoryProps[]>([
+  //   {
+  //     img: 'https://images.pexels.com/photos/1201996/pexels-photo-1201996.jpeg?auto=compress&cs=tinysrgb&w=400',
+  //     title: '',
+  //   },
+  // ]);
+  // const {
+  //   data: products = [],
+  //   error: allError,
+  //   isFetching: allFetching,
+  //   isSuccess,
+  // } = useGetAllProductsQuery();
+  // const {data: all = [], isFetching: allFetching} = useGetAllProductsQuery();
+  // const {data: phones = [], isFetching: phonesFetching} =
+  //   useGetAllPhonesQuery();
+  // const {data: laptops = [], isFetching: laptopsFetching} =
+  //   useGetAllLaptopsQuery();
+  const [productsData, setProductsData] = useState([
     {
-      img: 'https://images.pexels.com/photos/1201996/pexels-photo-1201996.jpeg?auto=compress&cs=tinysrgb&w=400',
+      img: '',
       title: '',
     },
   ]);
+  // const [phonesData, setPhonesData] = useState([]);
+  // const [laptopsData, setLaptopsData] = useState([]);
 
-  const getElectronics = async () => {
-    setLoading(true);
+  const getAllProducts = useCallback(async () => {
+    setAllLoading(true);
     return await firestore()
       .collection('Posts')
-      .where('category', '==', 'Electronics')
+      // .where('category', '==', 'Electronics')
       .get()
       .then(querySnapshot => {
         const newData = querySnapshot.docs.map(doc => ({
@@ -71,15 +98,21 @@ const Home = () => {
           title: doc.data().title,
           ...doc.data(),
         }));
-        setElectronics(newData);
-        setLoading(false);
+        setProductsData(newData);
+        // setAllLoading(false);
+        console.log('All products: ', productsData);
       })
-      .catch(e => console.log('getElectronics err: ', e));
-  };
+      .catch(e => console.log('getAllProducts err: ', e));
+  }, [productsData]);
 
   useEffect(() => {
-    getElectronics();
-  }, []);
+    try {
+      getAllProducts();
+      setAllLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [getAllProducts]);
 
   return (
     <LinearGradient
@@ -100,6 +133,7 @@ const Home = () => {
           <AntIcon name="bells" size={21} color="#fff" />
         </View>
       </View>
+
       <ScrollView showsVerticalScrollIndicator={false} style={styles.scroller}>
         <View style={styles.ctaView}>
           <View style={styles.leftAlign}>
@@ -120,25 +154,27 @@ const Home = () => {
         <FlatList
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          data={electronics}
+          data={productsData}
           renderItem={({item}) => (
             <View style={styles.promotedBox}>
-              {loading ? (
-                <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                  <ActivityIndicator size={'large'} color="#d9d2e9" />
-                </View>
-              ) : (
+              {!allLoading ? (
                 <ImageBackground
-                  source={{uri: `${item.img}`}}
+                  source={{
+                    uri: `${item.img ?? placeholder}`,
+                  }}
                   style={styles.coverImg}>
                   <Text style={styles.textOnCoverImg}>{item.title}</Text>
                 </ImageBackground>
+              ) : (
+                <ActivityIndicator
+                  size={'large'}
+                  style={{alignSelf: 'center'}}
+                />
               )}
             </View>
           )}
           keyExtractor={item => item.title}
         />
-
         <View style={styles.promotedRowLabelView}>
           <Text style={styles.promotedLabelText}>Electronics</Text>
           <Text style={styles.seeAllText}>See all</Text>
@@ -158,7 +194,6 @@ const Home = () => {
           )}
           keyExtractor={item => item.id.toString()}
         />
-
         <View style={styles.promotedRowLabelView}>
           <Text style={styles.promotedLabelText}>Fashion</Text>
           <Text style={styles.seeAllText}>See all</Text>
@@ -169,16 +204,21 @@ const Home = () => {
           data={DATA}
           renderItem={({item}) => (
             <View style={styles.promotedBox}>
-              <ImageBackground
-                source={{uri: `${item.img}`}}
-                style={styles.coverImg}>
-                <Text style={styles.textOnCoverImg}>{item.text}</Text>
-              </ImageBackground>
+              {loading ? (
+                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                  <ActivityIndicator size={'large'} color="#d9d2e9" />
+                </View>
+              ) : (
+                <ImageBackground
+                  source={{uri: `${item.img}`}}
+                  style={styles.coverImg}>
+                  <Text style={styles.textOnCoverImg}>{item.text}</Text>
+                </ImageBackground>
+              )}
             </View>
           )}
           keyExtractor={item => item.id.toString()}
         />
-
         <View style={styles.promotedRowLabelView}>
           <Text style={styles.promotedLabelText}>Vehicles</Text>
           <Text style={styles.seeAllText}>See all</Text>
@@ -198,6 +238,7 @@ const Home = () => {
           )}
           keyExtractor={item => item.id.toString()}
         />
+        <View style={styles.bottomSpaceView} />
       </ScrollView>
     </LinearGradient>
   );
@@ -214,6 +255,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 8,
+  },
+  bottomSpaceView: {
+    marginBottom: 84,
   },
   coverImg: {
     width: 140,
@@ -302,6 +346,7 @@ const styles = StyleSheet.create({
   scroller: {
     paddingBottom: 24,
   },
+
   seeAllText: {
     fontSize: 14,
     color: '#351c75',

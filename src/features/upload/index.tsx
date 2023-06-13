@@ -14,6 +14,8 @@ import {
   View,
 } from 'react-native';
 import React, {useState} from 'react';
+import storage from '@react-native-firebase/storage';
+import firestore from '@react-native-firebase/firestore';
 import {
   CameraOptions,
   ImageLibraryOptions,
@@ -29,6 +31,7 @@ import CTAButton from '../../components/CTAButton';
 import AiResultModal from './aiResultModal';
 import CustomDropDown from '../../components/molecules/DropDownComponent';
 import DatePicker from 'react-native-date-picker';
+import SubmitModal from './submitModal';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -43,10 +46,12 @@ const Upload = () => {
   const [deadline, setDeadline] = useState(new Date());
   const [isPromoted, setIsPromoted] = useState(isSwitchEnabled);
   const [imagePath, setImagePath] = useState('');
-  const [uploading, setUploading] = useState(false);
-  const [transferred, setTransferred] = useState(0);
+
   const [showModal, setShowModal] = useState(false);
   const [ctaLabel, setCTALabel] = useState('Continue');
+  const [submissionInProgress, setSubmissionInProgress] = useState(false);
+
+  const [imageBytesTransferred, setImageBytesTransferred] = useState(0);
 
   const toggleSwitch = () => setIsSwitchEnabled(prev => !prev);
   const continueEnabled = itemTitle.length > 5 && imagePath !== '';
@@ -55,21 +60,6 @@ const Upload = () => {
     setUsingRecommendedPrice(true);
     setCTALabel('Publish');
     setShowModal(false);
-  };
-
-  const onPublish = () => {
-    if (itemCategory.length === 0 || itemCategory === '') {
-      Alert.alert('Warning', 'Make sure you select an accurate Category!');
-      setCTALabel('Publish');
-      setUsingRecommendedPrice(true);
-      return;
-    } else {
-      setImagePath('');
-      onChangeItemTitle('');
-      onChangeItemDescription('');
-      setItemCategory('');
-      Alert.alert('Notice', 'Published new entry');
-    }
   };
 
   const showToastAndroid = (msg: string) => {
@@ -133,6 +123,70 @@ const Upload = () => {
     });
   };
 
+  const uploadPhoto = async () => {
+    const fileName = imagePath.substring(imagePath.lastIndexOf('-') + 1);
+    const uploadUri =
+      Platform.OS === 'ios' ? imagePath.replace('file://', '') : imagePath;
+
+    setImageBytesTransferred(0);
+
+    const storageRef = storage().ref(
+      `photos/${itemCategory.toLowerCase()}/${fileName}`,
+    );
+    const attempt = storageRef.putFile(uploadUri);
+    attempt.on('state_changed', attemptSnapshot => {
+      setImageBytesTransferred(
+        Math.round(
+          attemptSnapshot.bytesTransferred / attemptSnapshot.totalBytes,
+        ) * 100,
+      );
+    });
+
+    try {
+      await attempt;
+      const url = await storageRef.getDownloadURL();
+      Platform.OS === 'android'
+        ? showToastAndroid('Uploaded item image to bucket!')
+        : Alert.alert('Notice', 'Image uploaded to bucket');
+
+      return url;
+    } catch (error) {
+      console.log('Attempt err====================================');
+      console.log(error);
+      console.log('====================================');
+      return null;
+    }
+  };
+
+  const submitPost = async () => {
+    if (itemTitle && itemCategory && itemPrice) {
+      setSubmissionInProgress(true);
+      const imgUrl = await uploadPhoto();
+      firestore()
+        .collection('Posts')
+        .add({
+          category: itemCategory,
+          title: itemTitle,
+          price: itemPrice,
+          description: itemDescription,
+          imageurl: imgUrl,
+          created: firestore.Timestamp.fromDate(new Date()),
+        })
+        .then(() => {
+          setImagePath('');
+          setItemCategory('');
+          onChangeItemDescription('');
+          onChangeItemPrice('');
+          onChangeItemTitle('');
+          setSubmissionInProgress(false);
+          showToastAndroid('Post submitted!');
+        })
+        .catch(e => console.log('Submit err: ', e));
+    } else {
+      showToastAndroid('All fields are required!');
+    }
+  };
+
   return (
     <LinearGradient
       colors={['#351c75', '#8e7cc3', '#d9d2e9']}
@@ -175,12 +229,7 @@ const Upload = () => {
                 <Text style={styles.imageBoxBtnText}>Gallery</Text>
               </View>
             </TouchableWithoutFeedback>
-            {/* <TouchableWithoutFeedback onPress={() => takeAPhoto('photo')}>
-              <View style={styles.imageBoxBtn}>
-                <AntIcon name="camerao" size={21} color="#fff" />
-                <Text style={styles.imageBoxBtnText}>Camera</Text>
-              </View>
-            </TouchableWithoutFeedback> */}
+
             <View style={styles.calendar}>
               <Text style={{color: '#fff', fontSize: 16}}>Publish until</Text>
               <TouchableWithoutFeedback onPress={() => setOpenDate(true)}>
@@ -252,7 +301,8 @@ const Upload = () => {
                     setShowModal(false);
                     setUsingRecommendedPrice(false);
                     setCTALabel('Continue');
-                    onPublish();
+
+                    submitPost();
                   }
                 }}
               />
@@ -263,6 +313,11 @@ const Upload = () => {
           isVisible={showModal}
           acceptPrice={priceAccepted}
           closeModal={() => setShowModal(false)}
+        />
+        <SubmitModal
+          transferPercent={imageBytesTransferred}
+          isVisible={submissionInProgress}
+          closeModal={() => setSubmissionInProgress(false)}
         />
         <DatePicker
           modal

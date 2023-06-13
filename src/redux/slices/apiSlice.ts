@@ -5,8 +5,14 @@ export const productsApi = createApi({
   baseQuery: fetchBaseQuery({baseUrl: 'https://dummyjson.com/'}),
   endpoints: builder => ({
     getAllProducts: builder.query({
-      query: () => 'products?limit=15',
+      query: () => 'products?limit=10',
       keepUnusedDataFor: 5,
+    }),
+    getAllPhones: builder.query({
+      query: () => 'products/category/smartphones',
+    }),
+    getAllLaptops: builder.query({
+      query: () => 'products/category/laptops',
     }),
     getProduct: builder.query({
       query: product => `products/search?q=${product}&limit=10`,
@@ -14,4 +20,9 @@ export const productsApi = createApi({
   }),
 });
 
-export const {useGetAllProductsQuery, useGetProductQuery} = productsApi;
+export const {
+  useGetAllProductsQuery,
+  useGetProductQuery,
+  useGetAllLaptopsQuery,
+  useGetAllPhonesQuery,
+} = productsApi;
