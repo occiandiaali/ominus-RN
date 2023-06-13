@@ -2,8 +2,8 @@ import firebase from '@react-native-firebase/app';
 import {Platform} from 'react-native';
 
 const androidCredentials = {
-  appId: '1:861101010218:android:687a2449041bc48eee0253',
-  apiKey: 'AIzaSyB2eHksQmCxepo3WbwlPdFds0_EAre1yok',
+  appId: '',
+  apiKey: '',
   storageBucket: 'ominus-rn-project.appspot.com',
   messagingSenderId: '',
   projectId: 'ominus-rn-project',
