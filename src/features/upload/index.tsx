@@ -285,7 +285,7 @@ const Upload = () => {
           <View style={styles.lastRow}>
             <View style={styles.priceInputView}>
               <TextInput
-                placeholder="Enter item price..."
+                placeholder="Asking price..."
                 placeholderTextColor={'#985779'}
                 style={styles.priceInput}
                 keyboardType={'number-pad'}
