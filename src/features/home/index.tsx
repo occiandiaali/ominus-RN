@@ -147,7 +147,7 @@ const Home = () => {
             </View>
           </View>
         </View>
-        <View style={styles.promotedRowLabelView}>
+        <View style={[styles.promotedRowLabelView, {marginTop: 38}]}>
           <Text style={styles.promotedLabelText}>Promoted</Text>
           <Text style={styles.seeAllText}>See all</Text>
         </View>

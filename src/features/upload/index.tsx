@@ -54,7 +54,12 @@ const Upload = () => {
   const [imageBytesTransferred, setImageBytesTransferred] = useState(0);
 
   const toggleSwitch = () => setIsSwitchEnabled(prev => !prev);
-  const continueEnabled = itemTitle.length > 5 && imagePath !== '';
+  const continueEnabled = itemTitle.length > 3 && imagePath !== '';
+  const publishEnabled =
+    itemTitle !== '' &&
+    imagePath !== '' &&
+    itemCategory !== '' &&
+    itemPrice !== '';
 
   const priceAccepted = () => {
     setUsingRecommendedPrice(true);
@@ -257,7 +262,7 @@ const Upload = () => {
           <View style={styles.inputsContainer}>
             <TextInput
               placeholder="Enter item title..."
-              placeholderTextColor={'#351c75'}
+              placeholderTextColor={'#985779'}
               textAlign="center"
               style={styles.titleInput}
               maxLength={100}
@@ -266,7 +271,7 @@ const Upload = () => {
             />
             <TextInput
               placeholder="Briefly describe the item..."
-              placeholderTextColor={'#351c75'}
+              placeholderTextColor={'#985779'}
               textAlignVertical="top"
               textAlign="center"
               style={styles.descInput}
@@ -281,7 +286,7 @@ const Upload = () => {
             <View style={styles.priceInputView}>
               <TextInput
                 placeholder="Enter item price..."
-                placeholderTextColor={'#351c75'}
+                placeholderTextColor={'#985779'}
                 style={styles.priceInput}
                 keyboardType={'number-pad'}
                 onChangeText={onChangeItemPrice}
@@ -292,19 +297,20 @@ const Upload = () => {
             <View style={styles.ctaBtnView}>
               <CTAButton
                 enabled={continueEnabled}
-                btnText={ctaLabel}
-                onPress={() => {
-                  console.log('Pressed CTA...');
-                  if (usingRecommendedPrice === false && continueEnabled) {
-                    setShowModal(true);
-                  } else {
-                    setShowModal(false);
-                    setUsingRecommendedPrice(false);
-                    setCTALabel('Continue');
+                btnText={'Publish'}
+                // onPress={() => {
+                //   console.log('Pressed CTA...');
+                //   if (usingRecommendedPrice === false && continueEnabled) {
+                //     setShowModal(true);
+                //   } else {
+                //     setShowModal(false);
+                //     setUsingRecommendedPrice(false);
+                //     setCTALabel('Continue');
 
-                    submitPost();
-                  }
-                }}
+                //     submitPost();
+                //   }
+                // }}
+                onPress={() => submitPost()}
               />
             </View>
           </View>
@@ -355,9 +361,7 @@ const styles = StyleSheet.create({
     top: 136,
     right: 8,
   },
-  priceInputView: {
-    padding: 8,
-  },
+
   descInput: {
     borderWidth: 1,
     borderColor: '#fff',
@@ -425,10 +429,15 @@ const styles = StyleSheet.create({
     right: 8,
     padding: 4,
   },
+  priceInputView: {
+    padding: 8,
+    bottom: 12,
+  },
   titleInput: {
     borderWidth: 1,
     borderColor: '#fff',
     borderRadius: 12,
     margin: 8,
+    bottom: 12,
   },
 });

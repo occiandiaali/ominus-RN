@@ -9,67 +9,38 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AntIcon from 'react-native-vector-icons/AntDesign';
+import AiResultComponent from '../../components/molecules/AiResultComponent';
 
 const {height} = Dimensions.get('window');
 
 const AiResultModal = ({acceptPrice, closeModal, isVisible}) => {
-  const [loading, setLoading] = useState(isVisible);
+  // const [loading, setLoading] = useState(isVisible);
+  const [hideLoader, setHideLoader] = useState(false);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setHideLoader(true);
+  //   }, 4000);
+  // }, []);
   return (
     <Modal animationType="slide" transparent={true} visible={isVisible}>
       <View style={styles.container}>
         <TouchableWithoutFeedback onPress={closeModal}>
           <AntIcon name="close" size={26} style={styles.closeIcon} />
         </TouchableWithoutFeedback>
-        {loading === true ? (
-          <View style={styles.loadingView}>
-            <Text>Perambulating the reticular spline...</Text>
-            <ActivityIndicator size={'large'} color="blue" />
-          </View>
-        ) : (
-          <View style={styles.resultGrid}>
-            <View
-              style={[
-                styles.box,
-                {
-                  top: 245,
-                  left: 25,
-
-                  backgroundColor: 'powderblue',
-                },
-              ]}
-            />
-            <View
-              style={[
-                styles.box,
-                {
-                  top: 270,
-                  left: 50,
-
-                  backgroundColor: 'skyblue',
-                },
-              ]}
-            />
-            <View
-              style={[
-                styles.box,
-                {
-                  top: 295,
-                  left: 75,
-
-                  backgroundColor: 'steelblue',
-                },
-              ]}
-            />
-            <Text>The recommended price for this item: </Text>
-            <Text>NGN 28, 000</Text>
-          </View>
-        )}
+        <View style={styles.resultGrid}>
+          {/* {hideLoader === false ? (
+            <View style={styles.loadingView}>
+              <Text>Perambulating the reticular spline...</Text>
+              <ActivityIndicator size={'large'} color="blue" />
+            </View>
+          ) : (
+            <AiResultComponent searchTerm={query} />
+          )} */}
+          <Text>AiResultComponent</Text>
+          <Text>The recommended price for this item: </Text>
+          <Text>NGN 28, 000</Text>
+        </View>
         <View style={styles.actionBtnsView}>
           <View style={styles.acceptPriceView}>
             <TouchableWithoutFeedback onPress={acceptPrice}>
