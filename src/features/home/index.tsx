@@ -6,9 +6,11 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
 import storage from '@react-native-firebase/storage';
@@ -56,8 +58,10 @@ const DATA = [
 ];
 
 const Home = () => {
+  const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const [allLoading, setAllLoading] = useState(false);
+  const [categoryAllRoute, setCategoryAllRoute] = useState('');
   const placeholder =
     'https://images.pexels.com/photos/2043590/pexels-photo-2043590.jpeg?auto=compress&cs=tinysrgb&w=400';
   // const [electronics, setElectronics] = useState<CategoryProps[]>([
@@ -81,6 +85,7 @@ const Home = () => {
     {
       img: '',
       title: '',
+      category: '',
     },
   ]);
   // const [phonesData, setPhonesData] = useState([]);
@@ -96,6 +101,7 @@ const Home = () => {
         const newData = querySnapshot.docs.map(doc => ({
           img: doc.data().imageurl,
           title: doc.data().title,
+          category: doc.data().category,
           ...doc.data(),
         }));
         setProductsData(newData);
@@ -113,6 +119,27 @@ const Home = () => {
       console.log(error);
     }
   }, [getAllProducts]);
+
+  const renderItem = ({img, title, category}) => {
+    return (
+      <TouchableWithoutFeedback
+        onPress={() => {
+          console.log(`Navigating to ${category} screen..`);
+          navigation.navigate('post-details', {
+            itemTitle: title,
+            itemImg: img,
+          });
+        }}>
+        <ImageBackground
+          source={{
+            uri: `${img || placeholder}`,
+          }}
+          style={styles.coverImg}>
+          <Text style={styles.textOnCoverImg}>{title}</Text>
+        </ImageBackground>
+      </TouchableWithoutFeedback>
+    );
+  };
 
   return (
     <LinearGradient
@@ -149,7 +176,15 @@ const Home = () => {
         </View>
         <View style={[styles.promotedRowLabelView, {marginTop: 38}]}>
           <Text style={styles.promotedLabelText}>Promoted</Text>
-          <Text style={styles.seeAllText}>See all</Text>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              console.log(`${categoryAllRoute} item..`);
+              navigation.navigate('category-items-list', {
+                category: 'promoted',
+              });
+            }}>
+            <Text style={styles.seeAllText}>See all</Text>
+          </TouchableWithoutFeedback>
         </View>
         <FlatList
           horizontal={true}
@@ -158,13 +193,7 @@ const Home = () => {
           renderItem={({item}) => (
             <View style={styles.promotedBox}>
               {!allLoading ? (
-                <ImageBackground
-                  source={{
-                    uri: `${item.img ?? placeholder}`,
-                  }}
-                  style={styles.coverImg}>
-                  <Text style={styles.textOnCoverImg}>{item.title}</Text>
-                </ImageBackground>
+                renderItem(item)
               ) : (
                 <ActivityIndicator
                   size={'large'}
@@ -177,7 +206,15 @@ const Home = () => {
         />
         <View style={styles.promotedRowLabelView}>
           <Text style={styles.promotedLabelText}>Electronics</Text>
-          <Text style={styles.seeAllText}>See all</Text>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              console.log(`${categoryAllRoute} item..`);
+              navigation.navigate('category-items-list', {
+                category: 'electronics',
+              });
+            }}>
+            <Text style={styles.seeAllText}>See all</Text>
+          </TouchableWithoutFeedback>
         </View>
         <FlatList
           horizontal={true}
@@ -196,12 +233,20 @@ const Home = () => {
         />
         <View style={styles.promotedRowLabelView}>
           <Text style={styles.promotedLabelText}>Fashion</Text>
-          <Text style={styles.seeAllText}>See all</Text>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              console.log(`${categoryAllRoute} item..`);
+              navigation.navigate('category-items-list', {
+                category: 'fashion',
+              });
+            }}>
+            <Text style={styles.seeAllText}>See all</Text>
+          </TouchableWithoutFeedback>
         </View>
         <FlatList
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          data={DATA}
+          data={productsData}
           renderItem={({item}) => (
             <View style={styles.promotedBox}>
               {loading ? (
@@ -209,19 +254,23 @@ const Home = () => {
                   <ActivityIndicator size={'large'} color="#d9d2e9" />
                 </View>
               ) : (
-                <ImageBackground
-                  source={{uri: `${item.img}`}}
-                  style={styles.coverImg}>
-                  <Text style={styles.textOnCoverImg}>{item.text}</Text>
-                </ImageBackground>
+                renderItem(item)
               )}
             </View>
           )}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={item => item.title}
         />
         <View style={styles.promotedRowLabelView}>
           <Text style={styles.promotedLabelText}>Vehicles</Text>
-          <Text style={styles.seeAllText}>See all</Text>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              console.log(`${categoryAllRoute} item..`);
+              navigation.navigate('category-items-list', {
+                category: 'vehicles',
+              });
+            }}>
+            <Text style={styles.seeAllText}>See all</Text>
+          </TouchableWithoutFeedback>
         </View>
         <FlatList
           horizontal={true}

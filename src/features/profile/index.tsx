@@ -51,6 +51,11 @@ const Profile = () => {
           <Text style={{fontSize: 24, fontWeight: 'bold'}}>
             -------------------------------
           </Text>
+
+          <View style={{paddingTop: 12, flexDirection: 'row'}}>
+            <AntIcon name="logout" size={24} style={styles.logoutIcon} />
+            <Text style={{left: 24, fontSize: 16}}>Log Out</Text>
+          </View>
         </View>
       </View>
     </LinearGradient>
@@ -76,6 +81,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingBottom: 64,
   },
   gradientStyles: {
     flex: 1,
@@ -86,4 +92,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     top: '5%',
   },
+  logoutIcon: {},
 });
