@@ -6,7 +6,7 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  Switch,
+  //Switch,
   Text,
   TextInput,
   ToastAndroid,
@@ -28,7 +28,7 @@ import LinearGradient from 'react-native-linear-gradient';
 
 import CTAButton from '../../components/CTAButton';
 //import {reqCameraPermission, reqExtWritePermission} from './accessPermissions';
-import AiResultModal from './aiResultModal';
+//import AiResultModal from './aiResultModal';
 import CustomDropDown from '../../components/molecules/DropDownComponent';
 import DatePicker from 'react-native-date-picker';
 import SubmitModal from './submitModal';
@@ -40,32 +40,34 @@ const Upload = () => {
   const [itemDescription, onChangeItemDescription] = useState('');
   const [itemCategory, setItemCategory] = useState('');
   const [itemPrice, onChangeItemPrice] = useState('');
-  const [usingRecommendedPrice, setUsingRecommendedPrice] = useState(false);
-  const [isSwitchEnabled, setIsSwitchEnabled] = useState(false);
+  //const [usingRecommendedPrice, setUsingRecommendedPrice] = useState(false);
+  //const [isSwitchEnabled, setIsSwitchEnabled] = useState(false);
   const [openDate, setOpenDate] = useState(false);
   const [deadline, setDeadline] = useState(new Date());
-  const [isPromoted, setIsPromoted] = useState(isSwitchEnabled);
+  const [deadlineSet, setDeadlineSet] = useState(false);
+  //const [isPromoted, setIsPromoted] = useState(isSwitchEnabled);
   const [imagePath, setImagePath] = useState('');
 
-  const [showModal, setShowModal] = useState(false);
-  const [ctaLabel, setCTALabel] = useState('Continue');
+  //const [showModal, setShowModal] = useState(false);
+  //const [ctaLabel, setCTALabel] = useState('Continue');
   const [submissionInProgress, setSubmissionInProgress] = useState(false);
 
   const [imageBytesTransferred, setImageBytesTransferred] = useState(0);
 
-  const toggleSwitch = () => setIsSwitchEnabled(prev => !prev);
-  const continueEnabled = itemTitle.length > 3 && imagePath !== '';
+  //  const toggleSwitch = () => setIsSwitchEnabled(prev => !prev);
+  // const publishEnabled = itemTitle.length > 3 && imagePath !== '';
   const publishEnabled =
     itemTitle !== '' &&
     imagePath !== '' &&
     itemCategory !== '' &&
-    itemPrice !== '';
+    itemPrice !== '' &&
+    deadlineSet;
 
-  const priceAccepted = () => {
-    setUsingRecommendedPrice(true);
-    setCTALabel('Publish');
-    setShowModal(false);
-  };
+  // const priceAccepted = () => {
+  //   setUsingRecommendedPrice(true);
+  //   setCTALabel('Publish');
+  //   setShowModal(false);
+  // };
 
   const showToastAndroid = (msg: string) => {
     ToastAndroid.showWithGravity(msg, ToastAndroid.LONG, ToastAndroid.BOTTOM);
@@ -94,7 +96,7 @@ const Upload = () => {
       }
       response.assets?.map(m => {
         console.log(`Photo fileName: ${m.fileName}`);
-        showToastAndroid(`Photo filename: ${m.fileName}`);
+        // showToastAndroid(`Photo filename: ${m.fileName}`);
         setImagePath(m.uri || '');
       });
     });
@@ -176,10 +178,13 @@ const Upload = () => {
           description: itemDescription,
           imageurl: imgUrl,
           created: firestore.Timestamp.fromDate(new Date()),
+          expires: deadline,
         })
         .then(() => {
           setImagePath('');
           setItemCategory('');
+          setDeadline(new Date());
+          setDeadlineSet(false);
           onChangeItemDescription('');
           onChangeItemPrice('');
           onChangeItemTitle('');
@@ -235,7 +240,7 @@ const Upload = () => {
               </View>
             </TouchableWithoutFeedback>
 
-            <View style={styles.calendar}>
+            {/* <View style={styles.calendar}>
               <Text style={{color: '#fff', fontSize: 16}}>Publish until</Text>
               <TouchableWithoutFeedback onPress={() => setOpenDate(true)}>
                 <AntIcon
@@ -245,18 +250,44 @@ const Upload = () => {
                   style={{paddingLeft: 36}}
                 />
               </TouchableWithoutFeedback>
-            </View>
+            </View> */}
           </View>
           <View style={styles.categorySelectRow}>
             <CustomDropDown setChoice={setItemCategory} />
             <View style={{paddingVertical: 6, justifyContent: 'center'}}>
-              <Text style={{color: '#fff', bottom: 8}}>Promoted?</Text>
+              {/* <Text style={{color: '#fff', bottom: 8}}>Promoted?</Text>
               <Switch
                 trackColor={{false: '#767577', true: '#81b0ff'}}
                 thumbColor={isSwitchEnabled ? '#f5dd4b' : '#f4f3f4'}
                 onValueChange={toggleSwitch}
                 value={isSwitchEnabled}
-              />
+              /> */}
+              <Text style={{color: '#fff', fontSize: 18, bottom: 8}}>
+                {!deadlineSet ? 'Publish until' : deadline.toDateString()}
+              </Text>
+              <View style={styles.calendarRowView}>
+                <TouchableWithoutFeedback onPress={() => setOpenDate(true)}>
+                  <AntIcon
+                    name="calendar"
+                    size={24}
+                    color="#FFF"
+                    style={{paddingLeft: 42, bottom: 6}}
+                  />
+                </TouchableWithoutFeedback>
+                {deadlineSet && (
+                  <TouchableWithoutFeedback
+                    onPress={() => {
+                      setDeadlineSet(false);
+                    }}>
+                    <AntIcon
+                      name="close"
+                      size={24}
+                      color="#FFF"
+                      style={{paddingLeft: 12, bottom: 4}}
+                    />
+                  </TouchableWithoutFeedback>
+                )}
+              </View>
             </View>
           </View>
           <View style={styles.inputsContainer}>
@@ -265,7 +296,7 @@ const Upload = () => {
               placeholderTextColor={'#985779'}
               textAlign="center"
               style={styles.titleInput}
-              maxLength={100}
+              maxLength={25}
               onChangeText={onChangeItemTitle}
               value={itemTitle}
             />
@@ -296,7 +327,7 @@ const Upload = () => {
 
             <View style={styles.ctaBtnView}>
               <CTAButton
-                enabled={continueEnabled}
+                enabled={publishEnabled}
                 btnText={'Publish'}
                 // onPress={() => {
                 //   console.log('Pressed CTA...');
@@ -315,11 +346,11 @@ const Upload = () => {
             </View>
           </View>
         </ScrollView>
-        <AiResultModal
+        {/* <AiResultModal
           isVisible={showModal}
           acceptPrice={priceAccepted}
           closeModal={() => setShowModal(false)}
-        />
+        /> */}
         <SubmitModal
           transferPercent={imageBytesTransferred}
           isVisible={submissionInProgress}
@@ -330,7 +361,11 @@ const Upload = () => {
           mode={'datetime'}
           open={openDate}
           date={deadline}
-          onConfirm={() => null}
+          onConfirm={date => {
+            setOpenDate(false);
+            setDeadline(date);
+            setDeadlineSet(true);
+          }}
           onCancel={() => setOpenDate(false)}
         />
       </KeyboardAvoidingView>
@@ -343,6 +378,10 @@ export default Upload;
 const styles = StyleSheet.create({
   calendar: {
     right: 8,
+  },
+  calendarRowView: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   },
   categorySelectRow: {
     flexDirection: 'row',

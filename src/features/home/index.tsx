@@ -86,6 +86,9 @@ const Home = () => {
       img: '',
       title: '',
       category: '',
+      desc: '',
+      createdOn: '',
+      expiry: '',
     },
   ]);
   // const [phonesData, setPhonesData] = useState([]);
@@ -102,6 +105,9 @@ const Home = () => {
           img: doc.data().imageurl,
           title: doc.data().title,
           category: doc.data().category,
+          desc: doc.data().description,
+          createdOn: doc.data().created.toDate().toDateString(),
+          expiry: doc.data().expires.toDate().toDateString(),
           ...doc.data(),
         }));
         setProductsData(newData);
@@ -120,7 +126,7 @@ const Home = () => {
     }
   }, [getAllProducts]);
 
-  const renderItem = ({img, title, category}) => {
+  const renderItem = ({img, title, category, desc, createdOn, expiry}) => {
     return (
       <TouchableWithoutFeedback
         onPress={() => {
@@ -128,6 +134,9 @@ const Home = () => {
           navigation.navigate('post-details', {
             itemTitle: title,
             itemImg: img,
+            itemDesc: desc,
+            published: createdOn,
+            expires: expiry,
           });
         }}>
         <ImageBackground

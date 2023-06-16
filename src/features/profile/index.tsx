@@ -13,7 +13,7 @@ const Profile = () => {
       <View style={styles.container}>
         <View style={styles.heading}>
           <View style={styles.avatarBg}>
-            <AntIcon name="user" size={80} />
+            <AntIcon name="adduser" size={80} />
           </View>
           <View>
             <Text
