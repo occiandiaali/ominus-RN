@@ -6,10 +6,10 @@ import {NavigationContainer} from '@react-navigation/native';
 import BottomNav from './src/navigation/BottomNav';
 //import { AuthProvider } from './src/contexts/auth';
 //import { AuthNav } from './src/navigation/AuthNav';
-// import {Provider} from 'react-redux';
+import {Provider} from 'react-redux';
 // import {ApiProvider} from '@reduxjs/toolkit/dist/query/react';
 // import {productsApi} from './src/redux/slices/apiSlice';
-// import store from './src/redux/store';
+import store from './src/redux/store';
 
 // const App = () => {
 //   return (
@@ -28,12 +28,14 @@ import BottomNav from './src/navigation/BottomNav';
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <SafeAreaProvider>
-        <BottomNav />
-        <StatusBar hidden={true} />
-      </SafeAreaProvider>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <SafeAreaProvider>
+          <BottomNav />
+          <StatusBar hidden={true} />
+        </SafeAreaProvider>
+      </NavigationContainer>
+    </Provider>
   );
 };
 

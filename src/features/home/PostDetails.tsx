@@ -3,9 +3,11 @@ import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import AntIcon from 'react-native-vector-icons/AntDesign';
+import currencyFormat from '../../functions/currencyFormat';
 
 const PostDetails = ({route}) => {
-  const {itemTitle, itemImg, itemDesc, published, expires} = route.params;
+  const {itemTitle, itemImg, itemPrice, itemDescription, published, expires} =
+    route.params;
 
   return (
     <LinearGradient
@@ -21,23 +23,22 @@ const PostDetails = ({route}) => {
         <View style={styles.firstRowView}>
           <View style={styles.titlePriceExpires}>
             <Text style={styles.title}>{itemTitle}</Text>
+            <Text style={styles.price}>
+              {currencyFormat(itemPrice, 'NGN', 'en-NG')}
+            </Text>
             <Text style={styles.created}>Published: {published}</Text>
             <Text style={styles.expires}>Expires: {expires}</Text>
           </View>
           <View style={styles.sellerInfoView}>
-            <AntIcon name="user" size={48} color="#FFF" />
+            <View style={styles.sellerAvatarView}>
+              <AntIcon name="user" size={32} color="#FFF" />
+            </View>
             <Text style={styles.sellerName}>Seller Name</Text>
           </View>
         </View>
 
         <View style={styles.descView}>
-          {/* <Text style={styles.descText}>
-            In publishing and graphic design, Lorem ipsum is a placeholder text
-            commonly used to demonstrate the visual form of a document or a
-            typeface without relying on meaningful content. Lorem ipsum may be
-            used as a placeholder before final copy is available
-          </Text> */}
-          <Text style={styles.descText}>{itemDesc}</Text>
+          <Text style={styles.descText}>{itemDescription}</Text>
         </View>
 
         <View style={styles.ctaRow}>
@@ -110,6 +111,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingRight: 28,
+  },
+  price: {
+    fontSize: 16,
+    color: '#FFF',
+    fontWeight: 'bold',
+  },
+  sellerAvatarView: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 6,
+    marginBottom: 6,
+    backgroundColor: '#8e7cc3',
   },
   sellerInfoView: {
     top: 50,

@@ -13,21 +13,21 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
-import storage from '@react-native-firebase/storage';
-import firestore from '@react-native-firebase/firestore';
+import {Product} from '../../types';
 import {
-  useGetAllProductsQuery,
-  useGetAllLaptopsQuery,
-  useGetAllPhonesQuery,
-} from '../../redux/slices/apiSlice';
+  useFetchElectronicsPostsQuery,
+  useFetchFashionPostsQuery,
+  useFetchHouseholdPostsQuery,
+  useFetchVehiclesPostsQuery,
+} from './slices/productsSlice';
 
 const windowWidth = Dimensions.get('window').width;
 //const windowHeight = Dimensions.get('window').height;
 
-interface CategoryProps {
-  img: string;
-  title: string;
-}
+// interface CategoryProps {
+//   img: string;
+//   title: string;
+// }
 
 const DATA = [
   {
@@ -81,62 +81,121 @@ const Home = () => {
   //   useGetAllPhonesQuery();
   // const {data: laptops = [], isFetching: laptopsFetching} =
   //   useGetAllLaptopsQuery();
-  const [productsData, setProductsData] = useState([
-    {
-      img: '',
-      title: '',
-      category: '',
-      desc: '',
-      createdOn: '',
-      expiry: '',
-    },
-  ]);
+  // const [productsData, setProductsData] = useState([
+  //   {
+  //     img: '',
+  //     title: '',
+  //     category: '',
+  //     desc: '',
+  //     createdOn: '',
+  //     expiry: '',
+  //   },
+  // ]);
+  const {
+    data: electronicsData = [],
+    isLoading: electLoading,
+    isSuccess: electSuccess,
+    error: electErr,
+  } = useFetchElectronicsPostsQuery();
+  const {
+    data: householdData = [],
+    isLoading: householdLoading,
+    isSuccess: householdSuccess,
+    error: householdErr,
+  } = useFetchHouseholdPostsQuery();
+  const {
+    data: fashionData = [],
+    isLoading: fashionLoading,
+    isSuccess: fashionSuccess,
+    refetch: refetchFashion,
+    error: fashionErr,
+  } = useFetchFashionPostsQuery();
+  const {
+    data: vehiclesData = [],
+    isLoading: vehicleLoading,
+    isSuccess: vehicleSuccess,
+    error: vehicleErr,
+  } = useFetchVehiclesPostsQuery();
+
   // const [phonesData, setPhonesData] = useState([]);
   // const [laptopsData, setLaptopsData] = useState([]);
 
-  const getAllProducts = useCallback(async () => {
-    setAllLoading(true);
-    return await firestore()
-      .collection('Posts')
-      // .where('category', '==', 'Electronics')
-      .get()
-      .then(querySnapshot => {
-        const newData = querySnapshot.docs.map(doc => ({
-          img: doc.data().imageurl,
-          title: doc.data().title,
-          category: doc.data().category,
-          desc: doc.data().description,
-          createdOn: doc.data().created.toDate().toDateString(),
-          expiry: doc.data().expires.toDate().toDateString(),
-          ...doc.data(),
-        }));
-        setProductsData(newData);
-        // setAllLoading(false);
-        console.log('All products: ', productsData);
-      })
-      .catch(e => console.log('getAllProducts err: ', e));
-  }, [productsData]);
+  // const getAllProducts = useCallback(async () => {
+  //   setAllLoading(true);
+  //   return await firestore()
+  //     .collection('Posts')
+  //     // .where('category', '==', 'Electronics')
+  //     .get()
+  //     .then(querySnapshot => {
+  //       const newData = querySnapshot.docs.map(doc => ({
+  //         img: doc.data().imageurl,
+  //         title: doc.data().title,
+  //         category: doc.data().category,
+  //         desc: doc.data().description,
+  //         createdOn: doc.data().created.toDate().toDateString(),
+  //         expiry: doc.data().expires.toDate().toDateString(),
+  //         ...doc.data(),
+  //       }));
+  //       setProductsData(newData);
+  //       // setAllLoading(false);
+  //       console.log('All products: ', productsData);
+  //     })
+  //     .catch(e => console.log('getAllProducts err: ', e));
+  // }, [productsData]);
 
-  useEffect(() => {
-    try {
-      getAllProducts();
-      setAllLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
-  }, [getAllProducts]);
+  // useEffect(() => {
+  //   try {
+  //     getAllProducts();
+  //     setAllLoading(false);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }, [getAllProducts]);
 
-  const renderItem = ({img, title, category, desc, createdOn, expiry}) => {
+  // const renderItem = ({img, title, category, desc, createdOn, expiry}) => {
+  //   return (
+  //     <TouchableWithoutFeedback
+  //       onPress={() => {
+  //         console.log(`Navigating to ${category} screen..`);
+  //         navigation.navigate('post-details', {
+  //           itemTitle: title,
+  //           itemImg: img,
+  //           itemDesc: desc,
+  //           published: createdOn,
+  //           expires: expiry,
+  //         });
+  //       }}>
+  //       <ImageBackground
+  //         source={{
+  //           uri: `${img || placeholder}`,
+  //         }}
+  //         style={styles.coverImg}>
+  //         <Text style={styles.textOnCoverImg}>{title}</Text>
+  //       </ImageBackground>
+  //     </TouchableWithoutFeedback>
+  //   );
+  // };
+
+  const renderItem = ({
+    title,
+    price,
+    category,
+    description,
+    img,
+    createdOn,
+    expiresOn,
+  }: Product) => {
     return (
       <TouchableWithoutFeedback
         onPress={() => {
           console.log(`Navigating to ${category} screen..`);
           navigation.navigate('post-details', {
             itemTitle: title,
+            itemDescription: description,
+            itemPrice: price,
             itemImg: img,
-            itemDesc: desc,
             published: createdOn,
-            expires: expiry,
+            expires: expiresOn,
           });
         }}>
         <ImageBackground
@@ -187,39 +246,9 @@ const Home = () => {
           <Text style={styles.promotedLabelText}>Promoted</Text>
           <TouchableWithoutFeedback
             onPress={() => {
-              console.log(`${categoryAllRoute} item..`);
+              //  console.log(`${categoryAllRoute} item..`);
               navigation.navigate('category-items-list', {
                 category: 'promoted',
-              });
-            }}>
-            <Text style={styles.seeAllText}>See all</Text>
-          </TouchableWithoutFeedback>
-        </View>
-        <FlatList
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          data={productsData}
-          renderItem={({item}) => (
-            <View style={styles.promotedBox}>
-              {!allLoading ? (
-                renderItem(item)
-              ) : (
-                <ActivityIndicator
-                  size={'large'}
-                  style={{alignSelf: 'center'}}
-                />
-              )}
-            </View>
-          )}
-          keyExtractor={item => item.title}
-        />
-        <View style={styles.promotedRowLabelView}>
-          <Text style={styles.promotedLabelText}>Electronics</Text>
-          <TouchableWithoutFeedback
-            onPress={() => {
-              console.log(`${categoryAllRoute} item..`);
-              navigation.navigate('category-items-list', {
-                category: 'electronics',
               });
             }}>
             <Text style={styles.seeAllText}>See all</Text>
@@ -241,10 +270,39 @@ const Home = () => {
           keyExtractor={item => item.id.toString()}
         />
         <View style={styles.promotedRowLabelView}>
+          <Text style={styles.promotedLabelText}>Electronics</Text>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              //   console.log(`${categoryAllRoute} item..`);
+              navigation.navigate('category-items-list', {
+                category: 'electronics',
+              });
+            }}>
+            <Text style={styles.seeAllText}>See all</Text>
+          </TouchableWithoutFeedback>
+        </View>
+        <FlatList
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          data={electronicsData}
+          renderItem={({item}) => (
+            <View style={styles.promotedBox}>
+              {electLoading ? (
+                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                  <ActivityIndicator size={'large'} color="#d9d2e9" />
+                </View>
+              ) : (
+                renderItem(item)
+              )}
+            </View>
+          )}
+          keyExtractor={item => item.title}
+        />
+        <View style={styles.promotedRowLabelView}>
           <Text style={styles.promotedLabelText}>Fashion</Text>
           <TouchableWithoutFeedback
             onPress={() => {
-              console.log(`${categoryAllRoute} item..`);
+              //  console.log(`${categoryAllRoute} item..`);
               navigation.navigate('category-items-list', {
                 category: 'fashion',
               });
@@ -255,10 +313,10 @@ const Home = () => {
         <FlatList
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          data={productsData}
+          data={fashionData}
           renderItem={({item}) => (
             <View style={styles.promotedBox}>
-              {loading ? (
+              {fashionLoading ? (
                 <View style={{justifyContent: 'center', alignItems: 'center'}}>
                   <ActivityIndicator size={'large'} color="#d9d2e9" />
                 </View>
@@ -273,7 +331,7 @@ const Home = () => {
           <Text style={styles.promotedLabelText}>Vehicles</Text>
           <TouchableWithoutFeedback
             onPress={() => {
-              console.log(`${categoryAllRoute} item..`);
+              // console.log(`${categoryAllRoute} item..`);
               navigation.navigate('category-items-list', {
                 category: 'vehicles',
               });
@@ -284,17 +342,48 @@ const Home = () => {
         <FlatList
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          data={DATA}
+          data={vehiclesData}
           renderItem={({item}) => (
             <View style={styles.promotedBox}>
-              <ImageBackground
-                source={{uri: `${item.img}`}}
-                style={styles.coverImg}>
-                <Text style={styles.textOnCoverImg}>{item.text}</Text>
-              </ImageBackground>
+              {vehicleLoading ? (
+                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                  <ActivityIndicator size={'large'} color="#d9d2e9" />
+                </View>
+              ) : (
+                renderItem(item)
+              )}
             </View>
           )}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={item => item.title}
+        />
+        <View style={styles.promotedRowLabelView}>
+          <Text style={styles.promotedLabelText}>Household</Text>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              // console.log(`${categoryAllRoute} item..`);
+              navigation.navigate('category-items-list', {
+                category: 'household',
+              });
+            }}>
+            <Text style={styles.seeAllText}>See all</Text>
+          </TouchableWithoutFeedback>
+        </View>
+        <FlatList
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          data={householdData}
+          renderItem={({item}) => (
+            <View style={styles.promotedBox}>
+              {householdLoading ? (
+                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                  <ActivityIndicator size={'large'} color="#d9d2e9" />
+                </View>
+              ) : (
+                renderItem(item)
+              )}
+            </View>
+          )}
+          keyExtractor={item => item.title}
         />
         <View style={styles.bottomSpaceView} />
       </ScrollView>
