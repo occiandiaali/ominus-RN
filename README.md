@@ -3,10 +3,10 @@ React Native CLi, Firebase BaaS, Redux, APIs
 
 [![](https://img.shields.io/badge/Made_with-ReactNative-blue?style=for-the-badge&logo=react)](https://reactnative.dev/docs/getting-started)  
 ![ominus_logo](https://github.com/occiandiaali/ominus-RN/assets/40769994/2761dc5f-16b1-4c75-bbdb-d60213d7a7c7)  
-
-
-<img src="https://github.com/occiandiaali/ominus-RN/assets/40769994/fba57da2-1cdb-4b8d-b22c-d9a22eaf179b.jpg" height="360">
-<img src="https://github.com/occiandiaali/ominus-RN/assets/40769994/52328e69-e4ca-45fa-939f-ddf1b9ef4fa5.jpg" height="360">
-<img src="https://github.com/occiandiaali/ominus-RN/assets/40769994/fca03a3f-ac1e-4de3-8f09-8ae2671ad7a3.jpg" height="360">
-<img src="https://github.com/occiandiaali/ominus-RN/assets/40769994/76b5c536-9db0-4617-8f74-3dc918eda5b5.jpg" height="360">
-<img src="https://github.com/occiandiaali/ominus-RN/assets/40769994/7dad7cdf-0e01-4a9e-b57d-60bffbd8797f.jpg" height="360">
+  
+<img src="https://github.com/occiandiaali/ominus-RN/assets/40769994/33203392-cdeb-43a9-99fe-1d78389f4132.jpg" height="360">
+<img src="https://github.com/occiandiaali/ominus-RN/assets/40769994/fe07e240-9805-419f-b2c6-87332d6d231c.jpg" height="360">
+<img src="https://github.com/occiandiaali/ominus-RN/assets/40769994/6f83c42d-9cc9-4125-bbaf-2eb735b2f65c.jpg" height="360">
+<img src="https://github.com/occiandiaali/ominus-RN/assets/40769994/c975903e-635d-4f2c-a462-c198dab512e3.jpg" height="360">
+<img src="https://github.com/occiandiaali/ominus-RN/assets/40769994/32fc91d2-3e7f-4d9a-80f2-16dcc1882aa1.jpg" height="360">
+<img src="https://github.com/occiandiaali/ominus-RN/assets/40769994/19589990-0cfe-4aea-bbf8-7c6339ba99cf.jpg" height="360">
