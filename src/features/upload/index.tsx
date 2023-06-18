@@ -58,7 +58,6 @@ const Upload = () => {
   const [imageBytesTransferred, setImageBytesTransferred] = useState(0);
 
   //  const toggleSwitch = () => setIsSwitchEnabled(prev => !prev);
-  // const publishEnabled = itemTitle.length > 3 && imagePath !== '';
   const publishEnabled =
     itemTitle !== '' &&
     imagePath !== '' &&
@@ -74,15 +73,6 @@ const Upload = () => {
       useNativeDriver: true,
     }).start();
   };
-
-  // useEffect(() => {
-  //   setAnimValue(1);
-  // }, []);
-
-  // const toggleAnimScale = () => {
-  //   scaleIconAnim();
-  //   animValue === 0 ? setAnimValue(2) : setAnimValue(0);
-  // };
 
   // const priceAccepted = () => {
   //   setUsingRecommendedPrice(true);
@@ -117,7 +107,6 @@ const Upload = () => {
       }
       response.assets?.map(m => {
         console.log(`Photo fileName: ${m.fileName}`);
-        // showToastAndroid(`Photo filename: ${m.fileName}`);
         setImagePath(m.uri || '');
       });
     });
