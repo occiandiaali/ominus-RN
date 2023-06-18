@@ -1,5 +1,6 @@
 import {
   Alert,
+  Animated,
   Dimensions,
   Image,
   KeyboardAvoidingView,
@@ -13,7 +14,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import {
@@ -47,6 +48,8 @@ const Upload = () => {
   const [deadlineSet, setDeadlineSet] = useState(false);
   //const [isPromoted, setIsPromoted] = useState(isSwitchEnabled);
   const [imagePath, setImagePath] = useState('');
+  const [animValue, setAnimValue] = useState(2);
+  const [scaleAnim] = useState(new Animated.Value(animValue));
 
   //const [showModal, setShowModal] = useState(false);
   //const [ctaLabel, setCTALabel] = useState('Continue');
@@ -62,6 +65,24 @@ const Upload = () => {
     itemCategory !== '' &&
     itemPrice !== '' &&
     deadlineSet;
+
+  const scaleIconAnim = () => {
+    animValue === 1 ? setAnimValue(2) : setAnimValue(1);
+    Animated.spring(scaleAnim, {
+      toValue: animValue,
+      friction: 3,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  // useEffect(() => {
+  //   setAnimValue(1);
+  // }, []);
+
+  // const toggleAnimScale = () => {
+  //   scaleIconAnim();
+  //   animValue === 0 ? setAnimValue(2) : setAnimValue(0);
+  // };
 
   // const priceAccepted = () => {
   //   setUsingRecommendedPrice(true);
@@ -266,14 +287,24 @@ const Upload = () => {
                 {!deadlineSet ? 'Publish until' : deadline.toDateString()}
               </Text>
               <View style={styles.calendarRowView}>
-                <TouchableWithoutFeedback onPress={() => setOpenDate(true)}>
-                  <AntIcon
-                    name="calendar"
-                    size={24}
-                    color="#FFF"
-                    style={{paddingLeft: 42, bottom: 6}}
-                  />
-                </TouchableWithoutFeedback>
+                <Animated.View
+                  style={{
+                    transform: [{scale: scaleAnim}],
+                  }}>
+                  <TouchableWithoutFeedback
+                    onPress={() => {
+                      scaleIconAnim();
+                      setOpenDate(true);
+                    }}>
+                    <AntIcon
+                      name="calendar"
+                      size={24}
+                      color="#FFF"
+                      style={{paddingRight: 4, bottom: 6}}
+                    />
+                  </TouchableWithoutFeedback>
+                </Animated.View>
+
                 {deadlineSet && (
                   <TouchableWithoutFeedback
                     onPress={() => {
@@ -365,8 +396,12 @@ const Upload = () => {
             setOpenDate(false);
             setDeadline(date);
             setDeadlineSet(true);
+            scaleIconAnim();
           }}
-          onCancel={() => setOpenDate(false)}
+          onCancel={() => {
+            scaleIconAnim();
+            setOpenDate(false);
+          }}
         />
       </KeyboardAvoidingView>
     </LinearGradient>

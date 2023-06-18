@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   container: {
     //margin: 20,
     // marginTop: 80,
-    height: height * 0.75,
+    height: height * 0.45,
     backgroundColor: '#fff',
     borderRadius: 20,
     padding: 32,
@@ -53,7 +53,12 @@ const SubmitModal = ({closeModal, isVisible, transferPercent}) => {
           <AntIcon name="close" size={26} style={styles.closeIcon} />
         </TouchableWithoutFeedback>
         <View style={styles.resultGrid}>
-          <Text style={{color: 'black'}}>Uploading...</Text>
+          <Text style={{color: 'black'}}>
+            {transferPercent < 100 ? 'Uploading...' : 'Done'}
+          </Text>
+          {transferPercent < 100 ? (
+            <ActivityIndicator size={'large'} color="#8e7cc3" />
+          ) : null}
           <Text style={styles.percentageText}>{transferPercent}%</Text>
         </View>
       </View>
