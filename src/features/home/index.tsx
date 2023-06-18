@@ -9,8 +9,8 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
+import React, {useCallback} from 'react';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
 import {Product} from '../../types';
@@ -59,9 +59,9 @@ const DATA = [
 
 const Home = () => {
   const navigation = useNavigation();
-  const [loading, setLoading] = useState(false);
-  const [allLoading, setAllLoading] = useState(false);
-  const [categoryAllRoute, setCategoryAllRoute] = useState('');
+  // const [loading, setLoading] = useState(false);
+  // const [allLoading, setAllLoading] = useState(false);
+  // const [categoryAllRoute, setCategoryAllRoute] = useState('');
   const placeholder =
     'https://images.pexels.com/photos/2043590/pexels-photo-2043590.jpeg?auto=compress&cs=tinysrgb&w=400';
   // const [electronics, setElectronics] = useState<CategoryProps[]>([
@@ -70,111 +70,44 @@ const Home = () => {
   //     title: '',
   //   },
   // ]);
-  // const {
-  //   data: products = [],
-  //   error: allError,
-  //   isFetching: allFetching,
-  //   isSuccess,
-  // } = useGetAllProductsQuery();
-  // const {data: all = [], isFetching: allFetching} = useGetAllProductsQuery();
-  // const {data: phones = [], isFetching: phonesFetching} =
-  //   useGetAllPhonesQuery();
-  // const {data: laptops = [], isFetching: laptopsFetching} =
-  //   useGetAllLaptopsQuery();
-  // const [productsData, setProductsData] = useState([
-  //   {
-  //     img: '',
-  //     title: '',
-  //     category: '',
-  //     desc: '',
-  //     createdOn: '',
-  //     expiry: '',
-  //   },
-  // ]);
+
   const {
     data: electronicsData = [],
     isLoading: electLoading,
-    isSuccess: electSuccess,
-    error: electErr,
+    // isSuccess: electSuccess,
+    refetch: electRefetch,
+    // error: electErr,
   } = useFetchElectronicsPostsQuery();
   const {
     data: householdData = [],
     isLoading: householdLoading,
-    isSuccess: householdSuccess,
-    error: householdErr,
+    //  isSuccess: householdSuccess,
+    refetch: householdRefetch,
+    //  error: householdErr,
   } = useFetchHouseholdPostsQuery();
   const {
     data: fashionData = [],
     isLoading: fashionLoading,
-    isSuccess: fashionSuccess,
-    refetch: refetchFashion,
-    error: fashionErr,
+    // isSuccess: fashionSuccess,
+    refetch: fashionRefetch,
+    // error: fashionErr,
   } = useFetchFashionPostsQuery();
   const {
     data: vehiclesData = [],
     isLoading: vehicleLoading,
-    isSuccess: vehicleSuccess,
-    error: vehicleErr,
+    // isSuccess: vehicleSuccess,
+    refetch: vehiclesRefetch,
+    // error: vehicleErr,
   } = useFetchVehiclesPostsQuery();
 
-  // const [phonesData, setPhonesData] = useState([]);
-  // const [laptopsData, setLaptopsData] = useState([]);
-
-  // const getAllProducts = useCallback(async () => {
-  //   setAllLoading(true);
-  //   return await firestore()
-  //     .collection('Posts')
-  //     // .where('category', '==', 'Electronics')
-  //     .get()
-  //     .then(querySnapshot => {
-  //       const newData = querySnapshot.docs.map(doc => ({
-  //         img: doc.data().imageurl,
-  //         title: doc.data().title,
-  //         category: doc.data().category,
-  //         desc: doc.data().description,
-  //         createdOn: doc.data().created.toDate().toDateString(),
-  //         expiry: doc.data().expires.toDate().toDateString(),
-  //         ...doc.data(),
-  //       }));
-  //       setProductsData(newData);
-  //       // setAllLoading(false);
-  //       console.log('All products: ', productsData);
-  //     })
-  //     .catch(e => console.log('getAllProducts err: ', e));
-  // }, [productsData]);
-
-  // useEffect(() => {
-  //   try {
-  //     getAllProducts();
-  //     setAllLoading(false);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }, [getAllProducts]);
-
-  // const renderItem = ({img, title, category, desc, createdOn, expiry}) => {
-  //   return (
-  //     <TouchableWithoutFeedback
-  //       onPress={() => {
-  //         console.log(`Navigating to ${category} screen..`);
-  //         navigation.navigate('post-details', {
-  //           itemTitle: title,
-  //           itemImg: img,
-  //           itemDesc: desc,
-  //           published: createdOn,
-  //           expires: expiry,
-  //         });
-  //       }}>
-  //       <ImageBackground
-  //         source={{
-  //           uri: `${img || placeholder}`,
-  //         }}
-  //         style={styles.coverImg}>
-  //         <Text style={styles.textOnCoverImg}>{title}</Text>
-  //       </ImageBackground>
-  //     </TouchableWithoutFeedback>
-  //   );
-  // };
+  useFocusEffect(
+    useCallback(() => {
+      electRefetch();
+      householdRefetch();
+      fashionRefetch();
+      vehiclesRefetch();
+    }, [electRefetch, householdRefetch, fashionRefetch, vehiclesRefetch]),
+  );
 
   const renderItem = ({
     title,
@@ -243,7 +176,7 @@ const Home = () => {
           </View>
         </View>
         <View style={[styles.promotedRowLabelView, {marginTop: 38}]}>
-          <Text style={styles.promotedLabelText}>Promoted</Text>
+          <Text style={styles.promotedLabelText}>Most Viewed</Text>
           <TouchableWithoutFeedback
             onPress={() => {
               //  console.log(`${categoryAllRoute} item..`);
