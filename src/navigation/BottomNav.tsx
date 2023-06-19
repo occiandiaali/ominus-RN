@@ -9,8 +9,8 @@ import Upload from '../features/upload';
 import Profile from '../features/profile';
 import SignIn from '../features/auth/Signin';
 import SignUp from '../features/auth/Signup';
-import SeeAllList from '../components/SeeAllList';
 import PostDetails from '../features/home/PostDetails';
+import CategoryItemsList from '../features/home/CategoryItemsList';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -133,13 +133,14 @@ const BottomNav = () => {
       />
       <Stack.Screen
         name="category-items-list"
-        options={({route}) => ({
+        options={() => ({
+          // options={({route}) => ({
           // title: route.params?.category,
           headerTitle: '',
           headerTransparent: true,
           headerTintColor: '#fff',
         })}
-        component={SeeAllList}
+        component={CategoryItemsList}
       />
       <Stack.Screen
         name="post-details"

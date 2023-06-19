@@ -152,7 +152,6 @@ const Home = () => {
           <Text style={styles.promotedLabelText}>Most Viewed</Text>
           <TouchableWithoutFeedback
             onPress={() => {
-              //  console.log(`${categoryAllRoute} item..`);
               navigation.navigate('category-items-list', {
                 category: 'promoted',
               });
@@ -179,9 +178,9 @@ const Home = () => {
           <Text style={styles.promotedLabelText}>Electronics</Text>
           <TouchableWithoutFeedback
             onPress={() => {
-              //   console.log(`${categoryAllRoute} item..`);
               navigation.navigate('category-items-list', {
-                category: 'electronics',
+                categoryName: 'Electronics',
+                productCount: electronics.length,
               });
             }}>
             <Text style={styles.seeAllText}>See all</Text>
@@ -194,7 +193,7 @@ const Home = () => {
           renderItem={({item}) => (
             <View style={styles.promotedBox}>
               {loadingElect ? (
-                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                <View style={styles.loadingFlatlistView}>
                   <ActivityIndicator size={'large'} color="#d9d2e9" />
                 </View>
               ) : (
@@ -208,9 +207,9 @@ const Home = () => {
           <Text style={styles.promotedLabelText}>Fashion</Text>
           <TouchableWithoutFeedback
             onPress={() => {
-              //  console.log(`${categoryAllRoute} item..`);
               navigation.navigate('category-items-list', {
-                category: 'fashion',
+                categoryName: 'Fashion',
+                productCount: fashion.length,
               });
             }}>
             <Text style={styles.seeAllText}>See all</Text>
@@ -223,7 +222,7 @@ const Home = () => {
           renderItem={({item}) => (
             <View style={styles.promotedBox}>
               {loadingFashion ? (
-                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                <View style={styles.loadingFlatlistView}>
                   <ActivityIndicator size={'large'} color="#d9d2e9" />
                 </View>
               ) : (
@@ -237,9 +236,9 @@ const Home = () => {
           <Text style={styles.promotedLabelText}>Vehicles</Text>
           <TouchableWithoutFeedback
             onPress={() => {
-              // console.log(`${categoryAllRoute} item..`);
               navigation.navigate('category-items-list', {
-                category: 'vehicles',
+                categoryName: 'Vehicles',
+                productCount: vehicles.length,
               });
             }}>
             <Text style={styles.seeAllText}>See all</Text>
@@ -252,7 +251,7 @@ const Home = () => {
           renderItem={({item}) => (
             <View style={styles.promotedBox}>
               {loadingVehicles ? (
-                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                <View style={styles.loadingFlatlistView}>
                   <ActivityIndicator size={'large'} color="#d9d2e9" />
                 </View>
               ) : (
@@ -266,9 +265,9 @@ const Home = () => {
           <Text style={styles.promotedLabelText}>Household</Text>
           <TouchableWithoutFeedback
             onPress={() => {
-              // console.log(`${categoryAllRoute} item..`);
               navigation.navigate('category-items-list', {
-                category: 'household',
+                categoryName: 'Household',
+                productCount: household.length,
               });
             }}>
             <Text style={styles.seeAllText}>See all</Text>
@@ -281,7 +280,7 @@ const Home = () => {
           renderItem={({item}) => (
             <View style={styles.promotedBox}>
               {loadingHousehold ? (
-                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                <View style={styles.loadingFlatlistView}>
                   <ActivityIndicator size={'large'} color="#d9d2e9" />
                 </View>
               ) : (
@@ -378,6 +377,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
   },
+  loadingFlatlistView: {justifyContent: 'center', alignItems: 'center'},
   promotedBox: {
     width: 140,
     height: 120,
