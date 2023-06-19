@@ -1,42 +1,120 @@
 import {
+  ActivityIndicator,
   Dimensions,
   FlatList,
+  ImageBackground,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useCallback} from 'react';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
+import {Product} from '../../types';
+import {useGetPostsByCategoryQuery} from './slices/productsSlice';
 
 const windowWidth = Dimensions.get('window').width;
-//const windowHeight = Dimensions.get('window').height;
 
 const DATA = [
   {
     id: 1,
     text: 'Box one',
+    img: 'https://images.pexels.com/photos/4061420/pexels-photo-4061420.jpeg?auto=compress&cs=tinysrgb&w=400',
   },
   {
     id: 2,
     text: 'Box two',
+    img: 'https://images.pexels.com/photos/6508357/pexels-photo-6508357.jpeg?auto=compress&cs=tinysrgb&w=400',
   },
   {
     id: 3,
     text: 'Box three',
+    img: 'https://images.pexels.com/photos/1374910/pexels-photo-1374910.jpeg?auto=compress&cs=tinysrgb&w=400',
   },
   {
     id: 4,
     text: 'Box four',
+    img: 'https://images.pexels.com/photos/2043590/pexels-photo-2043590.jpeg?auto=compress&cs=tinysrgb&w=400',
   },
   {
     id: 5,
     text: 'Box five',
+    img: 'https://images.pexels.com/photos/1201996/pexels-photo-1201996.jpeg?auto=compress&cs=tinysrgb&w=400',
   },
 ];
 
 const Home = () => {
+  const navigation = useNavigation();
+
+  const placeholder =
+    'https://images.pexels.com/photos/2043590/pexels-photo-2043590.jpeg?auto=compress&cs=tinysrgb&w=400';
+
+  const {
+    data: electronics = [],
+    isLoading: loadingElect,
+    refetch: refetchElect,
+  } = useGetPostsByCategoryQuery('Electronics');
+  const {
+    data: household = [],
+    isLoading: loadingHousehold,
+    refetch: refetchHold,
+  } = useGetPostsByCategoryQuery('Household');
+  const {
+    data: fashion = [],
+    isLoading: loadingFashion,
+    refetch: refetchFashion,
+  } = useGetPostsByCategoryQuery('Fashion');
+  const {
+    data: vehicles = [],
+    isLoading: loadingVehicles,
+    refetch: refetchVehicles,
+  } = useGetPostsByCategoryQuery('Vehicles');
+
+  useFocusEffect(
+    useCallback(() => {
+      refetchElect();
+      refetchFashion();
+      refetchHold();
+      refetchVehicles();
+    }, [refetchElect, refetchFashion, refetchHold, refetchVehicles]),
+  );
+
+  const renderItem = ({
+    title,
+    price,
+    category,
+    description,
+    img,
+    createdOn,
+    expiresOn,
+  }: Product) => {
+    return (
+      <TouchableWithoutFeedback
+        onPress={() => {
+          console.log(`Navigating to ${category} screen..`);
+          navigation.navigate('post-details', {
+            itemTitle: title,
+            itemDescription: description,
+            itemPrice: price,
+            itemImg: img,
+            published: createdOn,
+            expires: expiresOn,
+          });
+        }}>
+        <ImageBackground
+          source={{
+            uri: `${img || placeholder}`,
+          }}
+          style={styles.coverImg}>
+          <Text style={styles.textOnCoverImg}>{title}</Text>
+        </ImageBackground>
+      </TouchableWithoutFeedback>
+    );
+  };
+
   return (
     <LinearGradient
       colors={['#351c75', '#8e7cc3', '#d9d2e9']}
@@ -56,6 +134,7 @@ const Home = () => {
           <AntIcon name="bells" size={21} color="#fff" />
         </View>
       </View>
+
       <ScrollView showsVerticalScrollIndicator={false} style={styles.scroller}>
         <View style={styles.ctaView}>
           <View style={styles.leftAlign}>
@@ -69,9 +148,17 @@ const Home = () => {
             </View>
           </View>
         </View>
-        <View style={styles.promotedRowLabelView}>
-          <Text style={styles.promotedLabelText}>Promoted</Text>
-          <Text style={styles.seeAllText}>See all</Text>
+        <View style={[styles.promotedRowLabelView, {marginTop: 38}]}>
+          <Text style={styles.promotedLabelText}>Most Viewed</Text>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              //  console.log(`${categoryAllRoute} item..`);
+              navigation.navigate('category-items-list', {
+                category: 'promoted',
+              });
+            }}>
+            <Text style={styles.seeAllText}>See all</Text>
+          </TouchableWithoutFeedback>
         </View>
         <FlatList
           horizontal={true}
@@ -79,59 +166,132 @@ const Home = () => {
           data={DATA}
           renderItem={({item}) => (
             <View style={styles.promotedBox}>
-              <Text>{item.text}</Text>
+              <ImageBackground
+                source={{uri: `${item.img}`}}
+                style={styles.coverImg}>
+                <Text style={styles.textOnCoverImg}>{item.text}</Text>
+              </ImageBackground>
             </View>
           )}
           keyExtractor={item => item.id.toString()}
         />
-
         <View style={styles.promotedRowLabelView}>
           <Text style={styles.promotedLabelText}>Electronics</Text>
-          <Text style={styles.seeAllText}>See all</Text>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              //   console.log(`${categoryAllRoute} item..`);
+              navigation.navigate('category-items-list', {
+                category: 'electronics',
+              });
+            }}>
+            <Text style={styles.seeAllText}>See all</Text>
+          </TouchableWithoutFeedback>
         </View>
         <FlatList
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          data={DATA}
+          data={electronics}
           renderItem={({item}) => (
             <View style={styles.promotedBox}>
-              <Text>{item.text}</Text>
+              {loadingElect ? (
+                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                  <ActivityIndicator size={'large'} color="#d9d2e9" />
+                </View>
+              ) : (
+                renderItem(item)
+              )}
             </View>
           )}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={item => item.title}
         />
-
         <View style={styles.promotedRowLabelView}>
           <Text style={styles.promotedLabelText}>Fashion</Text>
-          <Text style={styles.seeAllText}>See all</Text>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              //  console.log(`${categoryAllRoute} item..`);
+              navigation.navigate('category-items-list', {
+                category: 'fashion',
+              });
+            }}>
+            <Text style={styles.seeAllText}>See all</Text>
+          </TouchableWithoutFeedback>
         </View>
         <FlatList
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          data={DATA}
+          data={fashion}
           renderItem={({item}) => (
             <View style={styles.promotedBox}>
-              <Text>{item.text}</Text>
+              {loadingFashion ? (
+                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                  <ActivityIndicator size={'large'} color="#d9d2e9" />
+                </View>
+              ) : (
+                renderItem(item)
+              )}
             </View>
           )}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={item => item.title}
         />
-
         <View style={styles.promotedRowLabelView}>
           <Text style={styles.promotedLabelText}>Vehicles</Text>
-          <Text style={styles.seeAllText}>See all</Text>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              // console.log(`${categoryAllRoute} item..`);
+              navigation.navigate('category-items-list', {
+                category: 'vehicles',
+              });
+            }}>
+            <Text style={styles.seeAllText}>See all</Text>
+          </TouchableWithoutFeedback>
         </View>
         <FlatList
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          data={DATA}
+          data={vehicles}
           renderItem={({item}) => (
             <View style={styles.promotedBox}>
-              <Text>{item.text}</Text>
+              {loadingVehicles ? (
+                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                  <ActivityIndicator size={'large'} color="#d9d2e9" />
+                </View>
+              ) : (
+                renderItem(item)
+              )}
             </View>
           )}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={item => item.title}
         />
+        <View style={styles.promotedRowLabelView}>
+          <Text style={styles.promotedLabelText}>Household</Text>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              // console.log(`${categoryAllRoute} item..`);
+              navigation.navigate('category-items-list', {
+                category: 'household',
+              });
+            }}>
+            <Text style={styles.seeAllText}>See all</Text>
+          </TouchableWithoutFeedback>
+        </View>
+        <FlatList
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          data={household}
+          renderItem={({item}) => (
+            <View style={styles.promotedBox}>
+              {loadingHousehold ? (
+                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                  <ActivityIndicator size={'large'} color="#d9d2e9" />
+                </View>
+              ) : (
+                renderItem(item)
+              )}
+            </View>
+          )}
+          keyExtractor={item => item.title}
+        />
+        <View style={styles.bottomSpaceView} />
       </ScrollView>
     </LinearGradient>
   );
@@ -148,6 +308,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 8,
+  },
+  bottomSpaceView: {
+    marginBottom: 84,
+  },
+  coverImg: {
+    width: 140,
+    height: 120,
+    borderRadius: 24,
   },
   ctaTextH1: {
     fontSize: 24,
@@ -231,8 +399,14 @@ const styles = StyleSheet.create({
   scroller: {
     paddingBottom: 24,
   },
+
   seeAllText: {
     fontSize: 14,
     color: '#351c75',
+  },
+  textOnCoverImg: {
+    alignSelf: 'center',
+    paddingTop: 40,
+    color: '#fff',
   },
 });

@@ -7,6 +7,10 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Home from '../features/home';
 import Upload from '../features/upload';
 import Profile from '../features/profile';
+import SignIn from '../features/auth/Signin';
+import SignUp from '../features/auth/Signup';
+import SeeAllList from '../components/SeeAllList';
+import PostDetails from '../features/home/PostDetails';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -42,6 +46,23 @@ function ProfileStack() {
         name="profile-pg"
         options={{headerShown: false}}
         component={Profile}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function AuthStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="signin-screen"
+        options={{headerShown: false}}
+        component={SignIn}
+      />
+      <Stack.Screen
+        name="signup-screen"
+        options={{headerShown: false}}
+        component={SignUp}
       />
     </Stack.Navigator>
   );
@@ -110,14 +131,25 @@ const BottomNav = () => {
         options={{headerShown: false}}
         component={AppTabs}
       />
-      {/* <Stack.Screen
-        name="livestream"
+      <Stack.Screen
+        name="category-items-list"
+        options={({route}) => ({
+          // title: route.params?.category,
+          headerTitle: '',
+          headerTransparent: true,
+          headerTintColor: '#fff',
+        })}
+        component={SeeAllList}
+      />
+      <Stack.Screen
+        name="post-details"
         options={{
+          headerTitle: '',
           headerTransparent: true,
           headerTintColor: '#fff',
         }}
-        component={LiveStream}
-      /> */}
+        component={PostDetails}
+      />
     </Stack.Navigator>
   );
 };

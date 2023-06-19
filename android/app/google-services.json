@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "861101010218",
+    "project_id": "ominus-rn-project",
+    "storage_bucket": "ominus-rn-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:861101010218:android:687a2449041bc48eee0253",
+        "android_client_info": {
+          "package_name": "com.ominus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "861101010218-9esordka77hl5o4asvbrprftu6clf04k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2eHksQmCxepo3WbwlPdFds0_EAre1yok"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "861101010218-9esordka77hl5o4asvbrprftu6clf04k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
