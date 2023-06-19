@@ -17,3 +17,5 @@ export interface Product {
 }
 
 export type Products = Product[];
+
+export type Category = 'Electronics' | 'Household' | 'Fashion' | 'Vehicles';

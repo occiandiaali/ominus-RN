@@ -13,7 +13,7 @@ import AiResultComponent from '../../components/molecules/AiResultComponent';
 
 const {height} = Dimensions.get('window');
 
-const AiResultModal = ({acceptPrice, closeModal, isVisible}) => {
+const AiResultModal = ({itemTitle, closeModal, isVisible}) => {
   // const [loading, setLoading] = useState(isVisible);
   const [hideLoader, setHideLoader] = useState(false);
 
@@ -37,11 +37,13 @@ const AiResultModal = ({acceptPrice, closeModal, isVisible}) => {
           ) : (
             <AiResultComponent searchTerm={query} />
           )} */}
-          <Text>AiResultComponent</Text>
-          <Text>The recommended price for this item: </Text>
-          <Text>NGN 28, 000</Text>
+          <Text style={styles.header}>AI Result</Text>
+          <Text style={styles.leadText}>The average price for</Text>
+          <Text style={styles.leadText}>{itemTitle}</Text>
+          <ActivityIndicator size={'large'} color="#d9d2e9" />
+          <Text>is NGN 000, 000</Text>
         </View>
-        <View style={styles.actionBtnsView}>
+        {/* <View style={styles.actionBtnsView}>
           <View style={styles.acceptPriceView}>
             <TouchableWithoutFeedback onPress={acceptPrice}>
               <Text style={styles.acceptPriceText}>Accept price</Text>
@@ -52,7 +54,7 @@ const AiResultModal = ({acceptPrice, closeModal, isVisible}) => {
               <Text style={styles.acceptPriceText}>Reject price</Text>
             </TouchableWithoutFeedback>
           </View>
-        </View>
+        </View> */}
       </View>
     </Modal>
   );
@@ -91,7 +93,7 @@ const styles = StyleSheet.create({
   },
   container: {
     margin: 20,
-    height: height * 0.75,
+    height: height * 0.45,
     backgroundColor: '#fff',
     borderRadius: 20,
     padding: 32,
@@ -102,6 +104,12 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     elevation: 5,
+  },
+  header: {
+    fontSize: 24,
+  },
+  leadText: {
+    fontSize: 18,
   },
   loadingView: {
     paddingTop: '25%',

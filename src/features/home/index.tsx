@@ -14,20 +14,9 @@ import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
 import {Product} from '../../types';
-import {
-  useFetchElectronicsPostsQuery,
-  useFetchFashionPostsQuery,
-  useFetchHouseholdPostsQuery,
-  useFetchVehiclesPostsQuery,
-} from './slices/productsSlice';
+import {useGetPostsByCategoryQuery} from './slices/productsSlice';
 
 const windowWidth = Dimensions.get('window').width;
-//const windowHeight = Dimensions.get('window').height;
-
-// interface CategoryProps {
-//   img: string;
-//   title: string;
-// }
 
 const DATA = [
   {
@@ -59,54 +48,38 @@ const DATA = [
 
 const Home = () => {
   const navigation = useNavigation();
-  // const [loading, setLoading] = useState(false);
-  // const [allLoading, setAllLoading] = useState(false);
-  // const [categoryAllRoute, setCategoryAllRoute] = useState('');
+
   const placeholder =
     'https://images.pexels.com/photos/2043590/pexels-photo-2043590.jpeg?auto=compress&cs=tinysrgb&w=400';
-  // const [electronics, setElectronics] = useState<CategoryProps[]>([
-  //   {
-  //     img: 'https://images.pexels.com/photos/1201996/pexels-photo-1201996.jpeg?auto=compress&cs=tinysrgb&w=400',
-  //     title: '',
-  //   },
-  // ]);
 
   const {
-    data: electronicsData = [],
-    isLoading: electLoading,
-    // isSuccess: electSuccess,
-    refetch: electRefetch,
-    // error: electErr,
-  } = useFetchElectronicsPostsQuery();
+    data: electronics = [],
+    isLoading: loadingElect,
+    refetch: refetchElect,
+  } = useGetPostsByCategoryQuery('Electronics');
   const {
-    data: householdData = [],
-    isLoading: householdLoading,
-    //  isSuccess: householdSuccess,
-    refetch: householdRefetch,
-    //  error: householdErr,
-  } = useFetchHouseholdPostsQuery();
+    data: household = [],
+    isLoading: loadingHousehold,
+    refetch: refetchHold,
+  } = useGetPostsByCategoryQuery('Household');
   const {
-    data: fashionData = [],
-    isLoading: fashionLoading,
-    // isSuccess: fashionSuccess,
-    refetch: fashionRefetch,
-    // error: fashionErr,
-  } = useFetchFashionPostsQuery();
+    data: fashion = [],
+    isLoading: loadingFashion,
+    refetch: refetchFashion,
+  } = useGetPostsByCategoryQuery('Fashion');
   const {
-    data: vehiclesData = [],
-    isLoading: vehicleLoading,
-    // isSuccess: vehicleSuccess,
-    refetch: vehiclesRefetch,
-    // error: vehicleErr,
-  } = useFetchVehiclesPostsQuery();
+    data: vehicles = [],
+    isLoading: loadingVehicles,
+    refetch: refetchVehicles,
+  } = useGetPostsByCategoryQuery('Vehicles');
 
   useFocusEffect(
     useCallback(() => {
-      electRefetch();
-      householdRefetch();
-      fashionRefetch();
-      vehiclesRefetch();
-    }, [electRefetch, householdRefetch, fashionRefetch, vehiclesRefetch]),
+      refetchElect();
+      refetchFashion();
+      refetchHold();
+      refetchVehicles();
+    }, [refetchElect, refetchFashion, refetchHold, refetchVehicles]),
   );
 
   const renderItem = ({
@@ -217,10 +190,10 @@ const Home = () => {
         <FlatList
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          data={electronicsData}
+          data={electronics}
           renderItem={({item}) => (
             <View style={styles.promotedBox}>
-              {electLoading ? (
+              {loadingElect ? (
                 <View style={{justifyContent: 'center', alignItems: 'center'}}>
                   <ActivityIndicator size={'large'} color="#d9d2e9" />
                 </View>
@@ -246,10 +219,10 @@ const Home = () => {
         <FlatList
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          data={fashionData}
+          data={fashion}
           renderItem={({item}) => (
             <View style={styles.promotedBox}>
-              {fashionLoading ? (
+              {loadingFashion ? (
                 <View style={{justifyContent: 'center', alignItems: 'center'}}>
                   <ActivityIndicator size={'large'} color="#d9d2e9" />
                 </View>
@@ -275,10 +248,10 @@ const Home = () => {
         <FlatList
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          data={vehiclesData}
+          data={vehicles}
           renderItem={({item}) => (
             <View style={styles.promotedBox}>
-              {vehicleLoading ? (
+              {loadingVehicles ? (
                 <View style={{justifyContent: 'center', alignItems: 'center'}}>
                   <ActivityIndicator size={'large'} color="#d9d2e9" />
                 </View>
@@ -304,10 +277,10 @@ const Home = () => {
         <FlatList
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          data={householdData}
+          data={household}
           renderItem={({item}) => (
             <View style={styles.promotedBox}>
-              {householdLoading ? (
+              {loadingHousehold ? (
                 <View style={{justifyContent: 'center', alignItems: 'center'}}>
                   <ActivityIndicator size={'large'} color="#d9d2e9" />
                 </View>

@@ -2,11 +2,8 @@ import {createApi, fakeBaseQuery} from '@reduxjs/toolkit/query/react';
 
 export const fireStoreApi = createApi({
   baseQuery: fakeBaseQuery(),
-  tagTypes: [
-    'electronicProduct',
-    'houseHoldProduct',
-    'fashionProduct',
-    'vehicleProduct',
-  ],
+  // refetchOnFocus: true,
+  // refetchOnReconnect: true,
+  tagTypes: ['electronic', 'household', 'fashion', 'vehicle'],
   endpoints: () => ({}),
 });

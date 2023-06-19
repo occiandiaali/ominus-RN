@@ -25,6 +25,7 @@ import {
   MediaType,
 } from 'react-native-image-picker';
 import AntIcon from 'react-native-vector-icons/AntDesign';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import LinearGradient from 'react-native-linear-gradient';
 
 import CTAButton from '../../components/CTAButton';
@@ -33,6 +34,7 @@ import CTAButton from '../../components/CTAButton';
 import CustomDropDown from '../../components/molecules/DropDownComponent';
 import DatePicker from 'react-native-date-picker';
 import SubmitModal from './submitModal';
+import AiResultModal from './aiResultModal';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -51,7 +53,7 @@ const Upload = () => {
   const [animValue, setAnimValue] = useState(2);
   const [scaleAnim] = useState(new Animated.Value(animValue));
 
-  //const [showModal, setShowModal] = useState(false);
+  const [showBotModal, setShowBotModal] = useState(false);
   //const [ctaLabel, setCTALabel] = useState('Continue');
   const [submissionInProgress, setSubmissionInProgress] = useState(false);
 
@@ -250,17 +252,16 @@ const Upload = () => {
               </View>
             </TouchableWithoutFeedback>
 
-            {/* <View style={styles.calendar}>
-              <Text style={{color: '#fff', fontSize: 16}}>Publish until</Text>
-              <TouchableWithoutFeedback onPress={() => setOpenDate(true)}>
-                <AntIcon
-                  name="calendar"
-                  size={24}
-                  color="#FFF"
-                  style={{paddingLeft: 36}}
-                />
+            {publishEnabled ? (
+              <TouchableWithoutFeedback onPress={() => setShowBotModal(true)}>
+                <View style={styles.checkbotview}>
+                  <Text style={{fontSize: 14, color: '#FFF', marginBottom: 4}}>
+                    Check Bot
+                  </Text>
+                  <FontAwesome5Icon name="robot" size={24} />
+                </View>
               </TouchableWithoutFeedback>
-            </View> */}
+            ) : null}
           </View>
           <View style={styles.categorySelectRow}>
             <CustomDropDown setChoice={setItemCategory} />
@@ -366,11 +367,11 @@ const Upload = () => {
             </View>
           </View>
         </ScrollView>
-        {/* <AiResultModal
-          isVisible={showModal}
-          acceptPrice={priceAccepted}
-          closeModal={() => setShowModal(false)}
-        /> */}
+        <AiResultModal
+          isVisible={showBotModal}
+          itemTitle={itemTitle}
+          closeModal={() => setShowBotModal(false)}
+        />
         <SubmitModal
           transferPercent={imageBytesTransferred}
           isVisible={submissionInProgress}
@@ -413,6 +414,11 @@ const styles = StyleSheet.create({
     margin: 8,
 
     padding: 14,
+  },
+  checkbotview: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingRight: 24,
   },
   ctaBtnView: {
     alignSelf: 'flex-end',
