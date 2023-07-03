@@ -51,7 +51,7 @@ const Profile = () => {
             userImageStyle={styles.avatarBg}
             isImageSet={avatarSet}
           />
-          <Text style={styles.username}>occian3000</Text>
+          <Text style={styles.username}>occian46</Text>
         </View>
         <View style={styles.userStats}>
           <View style={styles.statCol1}>
@@ -136,7 +136,8 @@ const styles = StyleSheet.create({
     top: 260, //320,
   },
   galleryBottom: {
-    paddingBottom: '64%',
+    paddingBottom: '75%',
+    // marginBottom: 280,
   },
   gradientStyles: {
     flex: 1,

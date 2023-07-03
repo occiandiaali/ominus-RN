@@ -370,6 +370,7 @@ const Upload = () => {
         <AiResultModal
           isVisible={showBotModal}
           itemTitle={itemTitle}
+          category={itemCategory}
           closeModal={() => setShowBotModal(false)}
         />
         <SubmitModal

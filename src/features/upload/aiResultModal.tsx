@@ -1,6 +1,8 @@
 import {
   ActivityIndicator,
   Dimensions,
+  FlatList,
+  Image,
   Modal,
   StyleSheet,
   Text,
@@ -9,19 +11,22 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AntIcon from 'react-native-vector-icons/AntDesign';
-import AiResultComponent from '../../components/molecules/AiResultComponent';
+//import AiResultComponent from '../../components/molecules/AiResultComponent';
+import {useGetBingImagesQuery} from '../../services/bingImagesApi';
 
 const {height} = Dimensions.get('window');
 
-const AiResultModal = ({itemTitle, closeModal, isVisible}) => {
+const AiResultModal = ({itemTitle, category, closeModal, isVisible}) => {
   // const [loading, setLoading] = useState(isVisible);
   const [hideLoader, setHideLoader] = useState(false);
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setHideLoader(true);
-  //   }, 4000);
-  // }, []);
+  const {data: inputImg, isLoading} = useGetBingImagesQuery(category, {
+    refetchOnFocus: true,
+  });
+
+  useEffect(() => {
+    console.log(`Data: ${JSON.stringify(inputImg)}`);
+  }, [inputImg]);
   return (
     <Modal animationType="slide" transparent={true} visible={isVisible}>
       <View style={styles.container}>
@@ -40,7 +45,61 @@ const AiResultModal = ({itemTitle, closeModal, isVisible}) => {
           <Text style={styles.header}>AI Result</Text>
           <Text style={styles.leadText}>The average price for</Text>
           <Text style={styles.leadText}>{itemTitle}</Text>
-          <ActivityIndicator size={'large'} color="#d9d2e9" />
+          <View
+            style={{
+              marginTop: 24,
+              width: 320,
+              height: 380,
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderWidth: 1,
+              borderColor: '#d9d2e9',
+            }}>
+            {isLoading ? (
+              <ActivityIndicator size={'large'} color="#d9d2e9" />
+            ) : (
+              // inputImg?.map((img, i) => (
+              //   <View
+              //     style={{
+              //       width: 80,
+              //       height: 80,
+              //       margin: 4,
+              //       flexGrow: 1,
+              //       flexDirection: 'row',
+              //       flexWrap: 'wrap',
+              //     }}>
+              //     <Image
+              //       style={{
+              //         width: '100%',
+              //         height: 80,
+              //         margin: 4,
+              //         flexGrow: 1,
+              //         flexDirection: 'row',
+              //         flexWrap: 'wrap',
+              //       }}
+              //       source={{uri: img.image}}
+              //       key={i}
+              //     />
+              //   </View>
+              // ))
+              <FlatList
+                data={inputImg}
+                showsVerticalScrollIndicator={false}
+                horizontal={false}
+                renderItem={({item}) => (
+                  <View style={styles.renderItemWrap}>
+                    <Image
+                      style={styles.imageThumbnail}
+                      source={{uri: item.image}}
+                    />
+                  </View>
+                )}
+                //Setting the number of column
+                numColumns={2}
+                keyExtractor={(item, index) => index.toString()}
+              />
+            )}
+          </View>
           <Text>is NGN 000, 000</Text>
         </View>
         {/* <View style={styles.actionBtnsView}>
@@ -108,6 +167,13 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 24,
   },
+  imageThumbnail: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 100,
+    width: 150,
+    margin: 4,
+  },
   leadText: {
     fontSize: 18,
   },
@@ -115,6 +181,12 @@ const styles = StyleSheet.create({
     paddingTop: '25%',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  renderItemWrap: {
+    width: 150,
+    height: 120,
+    flexDirection: 'column',
+    margin: 4,
   },
   resultGrid: {
     paddingTop: '10%',

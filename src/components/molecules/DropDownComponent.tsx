@@ -57,7 +57,14 @@ const CustomDropDown = ({setChoice}) => {
   const [visible, setVisible] = useState(false);
   const [selected, setSelected] = useState('Category');
 
-  const categories = ['Electronics', 'Fashion', 'Household', 'Vehicles'];
+  const categories = [
+    'Electronics',
+    'electronics',
+    'jewelery',
+    'Fashion',
+    'Household',
+    'Vehicles',
+  ];
 
   const toggleDrop = (): void => {
     visible ? setVisible(false) : setVisible(true);
