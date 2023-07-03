@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   },
   container: {
     margin: 20,
-    height: height * 0.45,
+    height: height * 0.85,
     backgroundColor: '#fff',
     borderRadius: 20,
     padding: 32,
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   resultGrid: {
-    paddingTop: '25%',
+    paddingTop: '10%',
     justifyContent: 'center',
     alignItems: 'center',
   },

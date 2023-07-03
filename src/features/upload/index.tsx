@@ -258,7 +258,7 @@ const Upload = () => {
                   <Text style={{fontSize: 14, color: '#FFF', marginBottom: 4}}>
                     Check Bot
                   </Text>
-                  <FontAwesome5Icon name="robot" size={24} />
+                  <FontAwesome5Icon name="robot" size={24} color={'#FF0'} />
                 </View>
               </TouchableWithoutFeedback>
             ) : null}

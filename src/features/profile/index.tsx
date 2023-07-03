@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import LinearGradient from 'react-native-linear-gradient';
 import ProfileAvatarComponent from '../../components/organisms/ProfileAvatar';
 
@@ -18,6 +19,7 @@ const Profile = () => {
   const [avatarSet, setAvatarSet] = useState(false);
   // const today = new Date();
   // const n = today.toDateString();
+  const tabBarHeight = useBottomTabBarHeight();
   const placeholder =
     'https://images.pexels.com/photos/2043590/pexels-photo-2043590.jpeg?auto=compress&cs=tinysrgb&w=400';
   const [dataSource, setDataSource] = useState([
@@ -49,7 +51,7 @@ const Profile = () => {
             userImageStyle={styles.avatarBg}
             isImageSet={avatarSet}
           />
-          <Text style={styles.username}>User Name</Text>
+          <Text style={styles.username}>occian3000</Text>
         </View>
         <View style={styles.userStats}>
           <View style={styles.statCol1}>
@@ -65,13 +67,14 @@ const Profile = () => {
             <Text>Published</Text>
           </View>
         </View>
-        <Pressable onPress={null}>
-          <View style={styles.editProfileView}>
+        <View style={styles.editProfileView}>
+          <Pressable onPress={null}>
             <Text style={styles.editProfileText}>Edit profile</Text>
-          </View>
-        </Pressable>
+          </Pressable>
+        </View>
         <View style={styles.gallery}>
           <FlatList
+            contentContainerStyle={{paddingBottom: tabBarHeight}}
             data={dataSource}
             showsVerticalScrollIndicator={false}
             horizontal={false}
@@ -118,7 +121,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
   },
   editProfileView: {
-    top: 280,
+    top: 240,
     width: 160,
     height: 50,
     borderWidth: 1,
@@ -130,10 +133,10 @@ const styles = StyleSheet.create({
   gallery: {
     justifyContent: 'center',
     alignItems: 'center',
-    top: 320,
+    top: 260, //320,
   },
   galleryBottom: {
-    paddingBottom: '86%',
+    paddingBottom: '64%',
   },
   gradientStyles: {
     flex: 1,
@@ -193,7 +196,7 @@ const styles = StyleSheet.create({
   },
   userStats: {
     flexDirection: 'row',
-    top: 250,
+    top: 220,
     // bottom: 70,
     padding: 4,
   },
