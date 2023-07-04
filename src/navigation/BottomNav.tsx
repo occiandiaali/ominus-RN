@@ -11,6 +11,7 @@ import SignIn from '../features/auth/Signin';
 import SignUp from '../features/auth/Signup';
 import PostDetails from '../features/home/PostDetails';
 import CategoryItemsList from '../features/home/CategoryItemsList';
+import ChatBot from '../features/upload/chatBot';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -150,6 +151,15 @@ const BottomNav = () => {
           headerTintColor: '#fff',
         }}
         component={PostDetails}
+      />
+      <Stack.Screen
+        name="chat-bot"
+        options={{
+          headerTitle: '',
+          headerTransparent: true,
+          headerTintColor: '#fff',
+        }}
+        component={ChatBot}
       />
     </Stack.Navigator>
   );

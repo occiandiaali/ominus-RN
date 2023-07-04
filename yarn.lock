@@ -1877,6 +1877,11 @@
   dependencies:
     "@sinonjs/commons" "^3.0.0"
 
+"@slanglabs/slang-conva-react-native-retail-assistant@^8.5.3":
+  version "8.5.3"
+  resolved "https://registry.npmjs.org/@slanglabs/slang-conva-react-native-retail-assistant/-/slang-conva-react-native-retail-assistant-8.5.3.tgz"
+  integrity sha512-DJpEKZcPn1tGHB8jXSeKratAU21ZhKAm2FIBmrjpJZYsivO3DEc0fPD4gFZvcKfAjmXGPq9mpYdYTolAci2Ssg==
+
 "@tsconfig/react-native@^2.0.2":
   version "2.0.3"
   resolved "https://registry.npmjs.org/@tsconfig/react-native/-/react-native-2.0.3.tgz"

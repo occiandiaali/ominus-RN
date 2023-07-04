@@ -10,10 +10,7 @@ export const bingImagesApi = createApi({
     prepareHeaders(headers) {
       headers.set('Accept', 'application/json');
       //  headers.set();
-      headers.set(
-        'X-RapidAPI-Key',
-        '68d97d068amsh6e29993afa3d9b1p154d43jsnb7bfb59480e3',
-      );
+      headers.set('X-RapidAPI-Key', '');
       headers.set('X-RapidAPI-Host', 'bing-image-search1.p.rapidapi.com');
       return headers;
     },

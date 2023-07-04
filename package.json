@@ -20,6 +20,7 @@
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/stack": "^6.3.16",
     "@reduxjs/toolkit": "^1.9.5",
+    "@slanglabs/slang-conva-react-native-retail-assistant": "^8.5.3",
     "react": "18.2.0",
     "react-native": "0.71.8",
     "react-native-date-picker": "^4.2.13",

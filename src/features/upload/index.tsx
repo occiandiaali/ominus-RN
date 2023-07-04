@@ -15,6 +15,7 @@ import {
   View,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import {
@@ -58,6 +59,7 @@ const Upload = () => {
   const [submissionInProgress, setSubmissionInProgress] = useState(false);
 
   const [imageBytesTransferred, setImageBytesTransferred] = useState(0);
+  const navigation = useNavigation();
 
   //  const toggleSwitch = () => setIsSwitchEnabled(prev => !prev);
   const publishEnabled =
@@ -75,6 +77,12 @@ const Upload = () => {
       useNativeDriver: true,
     }).start();
   };
+
+  const launchChatBot = () =>
+    navigation.navigate('chat-bot', {
+      itemTitle: itemTitle,
+      category: itemCategory,
+    });
 
   // const priceAccepted = () => {
   //   setUsingRecommendedPrice(true);
@@ -253,7 +261,8 @@ const Upload = () => {
             </TouchableWithoutFeedback>
 
             {publishEnabled ? (
-              <TouchableWithoutFeedback onPress={() => setShowBotModal(true)}>
+              // <TouchableWithoutFeedback onPress={() => setShowBotModal(true)}>
+              <TouchableWithoutFeedback onPress={launchChatBot}>
                 <View style={styles.checkbotview}>
                   <Text style={{fontSize: 14, color: '#FFF', marginBottom: 4}}>
                     Check Bot
@@ -367,12 +376,12 @@ const Upload = () => {
             </View>
           </View>
         </ScrollView>
-        <AiResultModal
+        {/* <AiResultModal
           isVisible={showBotModal}
           itemTitle={itemTitle}
           category={itemCategory}
           closeModal={() => setShowBotModal(false)}
-        />
+        /> */}
         <SubmitModal
           transferPercent={imageBytesTransferred}
           isVisible={submissionInProgress}

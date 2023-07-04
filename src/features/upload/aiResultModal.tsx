@@ -11,7 +11,9 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AntIcon from 'react-native-vector-icons/AntDesign';
-//import AiResultComponent from '../../components/molecules/AiResultComponent';
+// import SlangConvaTrigger, {
+//   SlangRetailAssistant,
+// } from '@slanglabs/slang-conva-react-native-retail-assistant';
 import {useGetBingImagesQuery} from '../../services/bingImagesApi';
 
 const {height} = Dimensions.get('window');
@@ -20,16 +22,14 @@ const AiResultModal = ({itemTitle, category, closeModal, isVisible}) => {
   // const [loading, setLoading] = useState(isVisible);
   const [hideLoader, setHideLoader] = useState(false);
 
-  const {data: inputImg, isLoading} = useGetBingImagesQuery(category, {
+  const {data: inputImg, isFetching} = useGetBingImagesQuery(category, {
     refetchOnFocus: true,
   });
 
-  useEffect(() => {
-    console.log(`Data: ${JSON.stringify(inputImg)}`);
-  }, [inputImg]);
   return (
     <Modal animationType="slide" transparent={true} visible={isVisible}>
       <View style={styles.container}>
+        {/* <SlangConvaTrigger style={styles.triggerStyle} /> */}
         <TouchableWithoutFeedback onPress={closeModal}>
           <AntIcon name="close" size={26} style={styles.closeIcon} />
         </TouchableWithoutFeedback>
@@ -55,7 +55,7 @@ const AiResultModal = ({itemTitle, category, closeModal, isVisible}) => {
               borderWidth: 1,
               borderColor: '#d9d2e9',
             }}>
-            {isLoading ? (
+            {isFetching ? (
               <ActivityIndicator size={'large'} color="#d9d2e9" />
             ) : (
               // inputImg?.map((img, i) => (
@@ -192,5 +192,11 @@ const styles = StyleSheet.create({
     paddingTop: '10%',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  triggerStyle: {
+    position: 'absolute',
+    top: 64,
+    right: 48,
+    color: 'green',
   },
 });
